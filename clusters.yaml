@@ -1,0 +1,7 @@
+- alias: hasura
+  config:
+    configmap: controller-conf
+    namespace: crawfish92-hasura
+  data: null
+  kubeContext: crawfish92
+  name: crawfish92

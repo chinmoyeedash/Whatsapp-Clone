@@ -1,0 +1,19 @@
+- args:
+    permission:
+      columns:
+      - user_mobilenumber
+      - msg_id
+      - msg_text
+      - sent_time
+      - recd_time
+      - sender_id
+      - receiver_id
+      filter:
+        $or:
+        - sender_id:
+            $eq: X-HASURA-USER-ID
+        - receiver_id:
+            $eq: X-HASURA-USER-ID
+    role: user
+    table: messages
+  type: create_update_permission

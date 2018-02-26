@@ -1,0 +1,9 @@
+- args:
+    sql: CREATE TABLE "messages"("msg_id" integer NOT NULL, "msg_text" text NOT NULL,
+      "sent_time" text NOT NULL, "recd_time" text NOT NULL, "sender_id" integer NOT
+      NULL, "receiver_id" integer NOT NULL, "user_id" integer NOT NULL, PRIMARY KEY
+      ("msg_id") )
+  type: run_sql
+- args:
+    name: messages
+  type: add_existing_table_or_view

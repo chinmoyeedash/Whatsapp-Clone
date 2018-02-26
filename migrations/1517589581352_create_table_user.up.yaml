@@ -1,0 +1,8 @@
+- args:
+    sql: CREATE TABLE "user"("mobilenumber" integer NOT NULL, "displayname" text NOT
+      NULL, "displaypic" text NOT NULL, "status" text NOT NULL, "lastseen" timestamptz
+      NOT NULL, "deviceimei" text NOT NULL, PRIMARY KEY ("mobilenumber") )
+  type: run_sql
+- args:
+    name: user
+  type: add_existing_table_or_view

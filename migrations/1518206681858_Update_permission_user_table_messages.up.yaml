@@ -1,0 +1,12 @@
+- args:
+    permission:
+      columns: []
+      filter:
+        $or:
+        - sender_id:
+            $eq: X-HASURA-USER-ID
+        - receiver_id:
+            $eq: X-HASURA-USER-ID
+    role: user
+    table: messages
+  type: create_select_permission

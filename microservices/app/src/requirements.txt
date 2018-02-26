@@ -1,0 +1,6 @@
+flask
+requests
+gunicorn
+flask_socketio
+
+# add new packages one per each line
