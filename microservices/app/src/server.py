@@ -8,7 +8,7 @@ from flask_socketio import SocketIO,send,emit
 # from flask import jsonify
 
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
 print("STARTING")
