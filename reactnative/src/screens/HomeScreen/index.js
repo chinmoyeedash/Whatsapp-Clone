@@ -7,7 +7,7 @@ import ContactInfoScreen from '../ContactInfoScreen';
 import ImageScreen from '../ImageScreen';
 
 const LoginStack = StackNavigator({
-    Login: { screen: LoginScreen },
+    Login: { screen: HomeScreen },
      Home: { screen: HomeScreen },
      ChatScreen: { screen: ChatScreen },
      Profile: { screen: ProfileScreen },

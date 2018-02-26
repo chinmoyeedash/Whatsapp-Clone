@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 socketio = SocketIO(app)
 
-print("ATARTING")
+print("STARTING")
 sockets = []
 mobile = []
 clients = []
@@ -54,10 +54,11 @@ def handlemessage2(msg):
 	
 @app.route("/")
 def home():
-    return render_template('chatFront.html')
-
-	if __name__ == '__main__':
-    socketio.run(app)
+    #return render_template('chatFront.html')
+	return "Hasura Hello World"
+	
+if __name__ == '__main__':
+socketio.run(app, host='https://app.crawfish92.hasura-app.io')
 # Uncomment to add a new URL at /new
 
 # @app.route("/json")

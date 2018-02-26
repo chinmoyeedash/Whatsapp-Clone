@@ -1,0 +1,7 @@
+- args:
+    sql: |
+      INSERT INTO messages VALUES (1, 'Hello', 'February 13, 2018 11:13:00', 'February 13, 2018 11:15:00', 1, 2, 939484432 );
+      INSERT INTO messages VALUES (2, 'Hi', 'February 13, 2018 11:20:00', 'February 13, 2018 11:22:00', 2, 1, 890384432 );
+      INSERT INTO messages VALUES (3, 'How r u?', 'February 13, 2018 11:24:00', 'February 13, 2018 11:25:00', 2, 1, 890384432 );
+      INSERT INTO messages VALUES (4, 'Yup.. All fine!!', 'February 13, 2018 11:30:00', 'February 13, 2018 11:31:00', 1, 2, 939484432 );
+  type: run_sql

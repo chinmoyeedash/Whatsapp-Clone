@@ -1,8 +1,9 @@
 
 
-const dataUrl = 'https://data/course77/hasura-app.io/v1/query';
-const loginUrl = 'https://auth/course77/hasura-app.io/v1/login';
-const signupUrl = 'https://auth/course77/hasura-app.io/v1/signup';
+const dataUrl = 'https://data.crawfish92.hasura-app.io/v1/query';
+const loginUrl = 'https://auth.crawfish92.hasura-app.io/v1/login';
+const signupUrl = 'https://auth.crawfish92.hasura-app.io/v1/signup';
+const bearerToken = 'Bearer 63c36030befd4944c0426a0c515739c1e1862695c24981db';
 
 import { Alert, AsyncStorage } from 'react-native';
 // import fetch from 'isomorphic-fetch'
@@ -107,14 +108,14 @@ export async function insertUser(phone,userid) {
           "Content-Type":"application/json",
          //for appeal34 "Authorization": "Bearer b14ba9dff8d3de803387f4740de61585b44244d93783e0e0"
         //for defective95 "Authorization": "Bearer bd69be047e89fb3ac98e788222ee2a56547be1b35ef14fd3"
-        "Authorization": "Bearer 4b759eb695209e340c149c6596ea1031b524958046382af2"
+        "Authorization": 'Bearer 63c36030befd4944c0426a0c515739c1e1862695c24981db'
         }
     };
 
     var insertBody = {
         "type": "insert",
         "args": {
-            "table": "user",
+            "table": "users",
             "objects": [
                 {
                     "mobilenumber": phone,
@@ -135,7 +136,8 @@ export async function insertUser(phone,userid) {
     // make a 2nd request and return a promise
     return fetch(dataUrl, requestOptions)
     .then(function(response) {
-        console.log(response);
+        console.log(response.status);
+        console.log(response.statusText);
           return response;
     });
     }        
@@ -149,7 +151,7 @@ export async function sendOtpUser(phone) {
   // try {
      console.log('Making sendOtpUser query');
   
-  var url = "https://auth.course77.hasura-app.io/v1/providers/mobile/send-otp";
+  var url = "https://auth.crawfish92.hasura-app.io/v1/providers/mobile/send-otp";
 
 var requestOptions = {
     "method": "POST",
@@ -187,7 +189,7 @@ export async function updateUser(mobilenumber, displayname, displaypic, status) 
         "headers": {
             "Content-Type": "application/json",
             //for defective95 "Authorization": "Bearer bd69be047e89fb3ac98e788222ee2a56547be1b35ef14fd3"
-            "Authorization": "Bearer 4b759eb695209e340c149c6596ea1031b524958046382af2"
+            "Authorization": bearerToken
         }
     };
     
@@ -233,7 +235,7 @@ export async function getContacts(mobilenumber) {
         "headers": {
             "Content-Type": "application/json",
     //        "Authorization": "Bearer bd69be047e89fb3ac98e788222ee2a56547be1b35ef14fd3"
-            "Authorization": "Bearer 4b759eb695209e340c149c6596ea1031b524958046382af2"
+            "Authorization": bearerToken
         }
     };
     
@@ -289,7 +291,7 @@ export async function getUser(mobilenumber) {
       "headers": {
         "Content-Type": "application/json",
         //  "Authorization": "Bearer bd69be047e89fb3ac98e788222ee2a56547be1b35ef14fd3"
-        "Authorization": "Bearer 4b759eb695209e340c149c6596ea1031b524958046382af2"
+        "Authorization": bearerToken
    
     }
   }; 
@@ -311,7 +313,7 @@ export async function getUser(mobilenumber) {
   try {
     let resp = await fetch(dataUrl, requestOptions);
     console.log(resp);
-    return resp.json(); 
+    return resp; 
   }
   catch(e) {
     console.log("Request Failed: " + e);

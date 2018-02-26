@@ -1,0 +1,7 @@
+- args:
+    sql: |-
+      INSERT INTO users VALUES (939484432, 'Chinmoyee', null, 'I enjoy learning!', null, '3534534', 101);
+      INSERT INTO users VALUES (890384432, 'Test2', null, 'ChatsApp only!', null, '5334534', 102);
+      INSERT INTO users VALUES (756554432, 'Test3', null, 'Enjoy ChatsApping!', null, '9834534', 103);
+      INSERT INTO users VALUES (976634432, 'Test4', null, 'Hello Everyone!', null, '334534', 104);
+  type: run_sql

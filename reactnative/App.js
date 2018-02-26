@@ -6,7 +6,7 @@ export default class App extends Component {
 
   async componentWillMount() {
     try {
-      console.log('setting-course77');
+      console.log('setting-crawfish');
       //await AsyncStorage.setItem('HASURA_AUTH_TOKEN', 'I like to save it.');
        //await AsyncStorage.setItem('mobilenumber', '999242444');
        const user = {
@@ -18,7 +18,7 @@ export default class App extends Component {
         deviceimei: '1213',
         user_id: 1
     };
-      await AsyncStorage.setItem('user', user);
+      //await AsyncStorage.setItem('user', user);
     } catch (error) {
       // Error saving data
       console.log('error setting');
