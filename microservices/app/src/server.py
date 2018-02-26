@@ -58,7 +58,9 @@ def home():
 	return "Hasura Hello World"
 	
 if __name__ == '__main__':
-socketio.run(app, host='https://app.crawfish92.hasura-app.io')
+socketio.run(app)
+#socketio.run(app, host='https://app.crawfish92.hasura-app.io')
+#socketio.run(app)
 # Uncomment to add a new URL at /new
 
 # @app.route("/json")
