@@ -212,5 +212,6 @@ app:
     upstreamServicePath: /
     upstreamServicePort: 80
     corsPolicy: allow_all
+	enableWebsockets: true
 
 # To see actual endpoints for these routes, use `$ hasura ms ls`
