@@ -6,14 +6,14 @@ import { Text } from 'native-base';
 export default class MessageBubble extends Component {
     render() {
        //These spacers make the message bubble stay to the left or the right, depending on who is speaking, even if the message is multiple lines.
-      const leftSpacer = this.props.userid === 'left' ? null : <View style={{ width: 70 }} />;
-      const rightSpacer = this.props.userid === 'left' ? 
+      const leftSpacer = this.props.direction === 'left' ? null : <View style={{ width: 70 }} />;
+      const rightSpacer = this.props.direction === 'left' ? 
       <View style={{ width: 70 }} /> : null;
   
-      const bubbleStyles = this.props.userid === 'left' ? 
+      const bubbleStyles = this.props.direction === 'left' ? 
       [styles.messageBubble, styles.messageBubbleLeft] : [styles.messageBubble, styles.messageBubbleRight];
   
-      const bubbleTextStyle = this.props.userid === 'left' ? 
+      const bubbleTextStyle = this.props.direction === 'left' ? 
       styles.messageBubbleTextLeft : styles.messageBubbleTextRight;
   
       return (

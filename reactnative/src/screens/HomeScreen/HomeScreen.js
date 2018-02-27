@@ -102,6 +102,7 @@ export default class HomeScreen extends Component {
       console.log(this.state.mobilenumber);
       return getUser(this.state.mobilenumber);
     }).then(user => {
+      console.log(user);
       console.log(JSON.stringify(user[0]));
       this.state.user = JSON.stringify(user[0]);
       AsyncStorage.setItem('user', JSON.stringify(user[0]));

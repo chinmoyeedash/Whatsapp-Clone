@@ -70,7 +70,7 @@ export async function trySignupAndInsert(phone,otp) {
           var insertBody = {
               "type": "insert",
               "args": {
-                  "table": "user",
+                  "table": "users",
                   "objects": [
                       {
                           "mobilenumber": phone,
@@ -196,7 +196,7 @@ export async function updateUser(mobilenumber, displayname, displaypic, status) 
     var body = {
         "type": "update",
         "args": {
-            "table": "user",
+            "table": "users",
             "where": {
                 "mobilenumber": {
                     "$eq": mobilenumber
@@ -242,7 +242,7 @@ export async function getContacts(mobilenumber) {
     var body = {
         "type": "select",
         "args": {
-            "table": "user",
+            "table": "users",
             "columns": [
                 "*"
             ],
@@ -298,7 +298,7 @@ export async function getUser(mobilenumber) {
   var body = {
       "type": "select",
       "args": {
-          "table": "user",
+          "table": "users",
           "columns": [
               "*"
           ],
@@ -313,7 +313,7 @@ export async function getUser(mobilenumber) {
   try {
     let resp = await fetch(dataUrl, requestOptions);
     console.log(resp);
-    return resp; 
+    return resp.json(); 
   }
   catch(e) {
     console.log("Request Failed: " + e);
