@@ -204,6 +204,7 @@ notify:
     corsPolicy: allow_all
 
 # expose flask microserivce at a subdomain
+# expose flask microserivce at a subdomain
 app:
   /:
     upstreamService:
@@ -212,6 +213,5 @@ app:
     upstreamServicePath: /
     upstreamServicePort: 80
     corsPolicy: allow_all
-	enableWebsockets: true
-	
+    enableWebsockets: true
 # To see actual endpoints for these routes, use `$ hasura ms ls`

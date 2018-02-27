@@ -15,55 +15,55 @@ const image = require('../images/kingfisher.jpg');
 export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
-    
+    const messages = [
+    {
+        recd_time: 'February 14, 2018 23:16:30 GMT+11:00',
+        user_mobilenumber: 9283498234,
+        msg_text: 'hello',
+        msg_id: 1,
+        receiver_id: 2,
+        sent_time: 'February 14, 2018 23:16:30 GMT+11:00',
+        sender_id: 1
+    },
+    {
+        recd_time: 'February 14, 2018 23:20:30 GMT+11:00',
+        user_mobilenumber: 9283498234,
+        msg_text: 'how r u',
+        msg_id: 2,
+        receiver_id: 2,
+        sent_time: 'February 14, 2018 23:20:30 GMT+11:00',
+        sender_id: 1
+    },
+    {
+        recd_time: 'February 14, 2018 23:25:40 GMT+11:00',
+        user_mobilenumber: 9888888888,
+        msg_text: 'I am fine.. busy!!',
+        msg_id: 3,
+        receiver_id: 1,
+        sent_time: 'February 14, 2018 23:25:30 GMT+11:00',
+        sender_id: 2
+    }
+];
     this.state = {
       user,
       user_id: this.props.navigation.state.params.user_id,
       friendid: this.props.navigation.state.params.friend_id,
       showPicker: false,
-      messages: [],
+      messages,
       value: '',
       height: 40
     };
     this.joinUser = this.joinUser.bind(this);
     this.onReceivedMessage = this.onReceivedMessage.bind(this);
     
-    this.socket = SocketIOClient('http://app.course77.hasura-app.io/');
+    this.socket = SocketIOClient('http://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
     this.socket.on('message', this.onReceivedMessage);
 
     this.joinUser();
     console.log(this.props.navigation.state.params.user_id, this.props.navigation.state.params.friend_id);
     this.sendMessage.bind(this);
     
-  // const messages = [
-  //   {
-  //       recd_time: 'February 14, 2018 23:16:30 GMT+11:00',
-  //       user_mobilenumber: 9283498234,
-  //       msg_text: 'hello',
-  //       msg_id: 1,
-  //       receiver_id: 2,
-  //       sent_time: 'February 14, 2018 23:16:30 GMT+11:00',
-  //       sender_id: 1
-  //   },
-  //   {
-  //       recd_time: 'February 14, 2018 23:20:30 GMT+11:00',
-  //       user_mobilenumber: 9283498234,
-  //       msg_text: 'how r u',
-  //       msg_id: 2,
-  //       receiver_id: 2,
-  //       sent_time: 'February 14, 2018 23:20:30 GMT+11:00',
-  //       sender_id: 1
-  //   },
-  //   {
-  //       recd_time: 'February 14, 2018 23:25:40 GMT+11:00',
-  //       user_mobilenumber: 9888888888,
-  //       msg_text: 'I am fine.. busy!!',
-  //       msg_id: 3,
-  //       receiver_id: 1,
-  //       sent_time: 'February 14, 2018 23:25:30 GMT+11:00',
-  //       sender_id: 2
-  //   }
-//];
+  
   }
 
   onReceivedMessage = (msg) => {
