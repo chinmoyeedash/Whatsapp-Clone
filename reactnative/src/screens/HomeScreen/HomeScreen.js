@@ -141,13 +141,13 @@ export default class HomeScreen extends Component {
  // }
 
 renderContacts() {
-  console.log(`inside renderContacts, state ${this.state.userMessages}`);
+  console.log(`inside renderContacts, state ${this.state.userMessages.toString}`);
   //album passed as prop from parent to child so that the particular album's detail is shown
   return this.state.userMessages.map(userMessages =>
     <Row key={userMessages.user_id} users={userMessages} navigation={this.props.navigation} />);
 }
 renderChats() {
-  console.log(`inside renderChats, state ${this.state.userMessages}`);
+  console.log(`inside renderChats, state ${this.state.userMessages.toString}`);
   //album passed as prop from parent to child so that the particular album's detail is shown
   return this.state.userMessages.map(userMessages =>
       <ChatDetails key={userMessages.msg_id} userMessages={userMessages} navigation={this.props.navigation} />);

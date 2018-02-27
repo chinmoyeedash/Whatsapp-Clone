@@ -10,7 +10,8 @@ import MessageBubble from '../components/MessageBubble';
 const { EmojiOverlay } = require('react-native-emoji-picker');
 
 let user;
-let direction='right';
+let direction = 'right';
+
 const image = require('../images/kingfisher.jpg');
 
 export default class ChatScreen extends Component {
@@ -52,13 +53,13 @@ export default class ChatScreen extends Component {
       showPicker: false,
       messages,
       value: '',
-      height: 40,
-     
+      height: 40
     };
     this.joinUser = this.joinUser.bind(this);
     this.onReceivedMessage = this.onReceivedMessage.bind(this);
     
-    this.socket = SocketIOClient('http://localhost:5000', { transports: ['websocket'] });
+    this.socket = SocketIOClient('http://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
+    console.log(this.socket);
     this.socket.on('message', this.onReceivedMessage);
 
     this.joinUser();
@@ -80,10 +81,9 @@ export default class ChatScreen extends Component {
         console.log(`inside joinuser, state ${JSON.stringify(this.state.user)}`); 
       })
       .catch(error => console.log(error));
-
-      this.socket.on('connect', () => {
+      this.socket.on('connect', () =>  {
         console.log('in CONNECT');
-    		//this.socket.send('User has connected');
+    //		socket.send('User has connected');
      		const userid = this.state.user_id;
      //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myConnect', {
@@ -127,15 +127,6 @@ export default class ChatScreen extends Component {
   });
 }
 
- showMessageBubble(message) {
-  if (this.state.user_id === message.sender_id) { 
-    direction = 'right';
-  } else {
-    direction = 'left';
-  }
-   <MessageBubble key={message.msg_id} direction={direction} text={message.text} time={message.time} />
-  }
-  
 openEmoji() {
   Keyboard.dismiss();
   this.setState({ showPicker: true });
@@ -147,6 +138,20 @@ handlePick(emoji) {
   console.log(emoji);
  // this.setState({ value: value + emoji });
 }
+showMessageBubble() {
+  console.log(`inside showMessageBubble, state ${this.state.messages}`);
+  this.state.messages.map((message) => {
+    if (this.state.user_id === message.sender_id) {
+      direction = 'right';
+    } else {
+      direction = 'left';
+    }
+    console.log(direction);
+    return (
+      <MessageBubble key={message.msg_id} direction={direction} text={message.text} time={message.time} />
+    );
+  });
+}
 
 render() {
     const { value, height } = this.state;
@@ -156,7 +161,7 @@ render() {
       height
     };
 
-    const messages = this.state.messages;
+    // const messages = this.state.messages;
        
     return (
       <Container style={{ backgroundColor: '#fbebb0' }}>
@@ -190,9 +195,7 @@ render() {
          </ScrollView> */}
          
          <View style={{ flex: 1 }}>
-         {
-           messages.map((message) => this.showMessageBubble(message))
-         }
+         {this.showMessageBubble()}     
          {/* <MessageBubble key={0} direction='left' text='hello' />
          <MessageBubble key={1} direction='left' text='hw r u? ' />
          <MessageBubble key={2} direction='right' text='i am fine ' /> */}
@@ -247,7 +250,20 @@ height }}
             onEmojiSelected={this.handlePick.bind(this)}
             onTapOutside={() => this.setState({ showPicker: false })} 
           />
-               
+         
+          {/* <View style={styles.inputBar}>
+        <TextInput
+        placeholder="Type a message"
+        onChangeText={(value) => this.setState({ value })}
+        style={{ borderRadius: 5, borderWidth: 1, borderColor: 'gray', flex: 1, 
+        fontSize: 16, paddingHorizontal: 10, height }}
+        editable
+        multiline
+        value={value}
+        onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
+        />  </View>
+       */}
+       
       </Container>
     );
   }
