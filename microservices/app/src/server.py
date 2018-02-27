@@ -5,7 +5,7 @@ from flask_socketio import SocketIO
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
-print("STARTING")
+print("STARTING NOW")
 sockets = []
 #mobile = []
 clients = []
@@ -20,7 +20,7 @@ def handleconnect(json):
     sockets.append(socketio)
     print(sockets)
 
-    clients.append(request.sid)
+ #   clients.append(request.sid)
 
     
 #   print('Message is ' + msg)
@@ -34,7 +34,7 @@ def handlemessage(json):
 #    tp_index = mobile.index(json['toMobile'])
 #    print('tp_index=',tp_index)
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
-    emit('message',json['msg'],room=clients[tp_index])
+#    emit('message',json['msg'],room=clients[tp_index])
 #   print('Message is ' + msg)
 #   print('from mobile' + str(fromMobile))
 #   print('to Mobile' + str(toMobile))
@@ -51,6 +51,6 @@ if __name__ == '__main__':
 	
 @app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template('chatFront.html')
 
 	
