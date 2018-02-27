@@ -1,6 +1,6 @@
 flask
 requests
 gunicorn
-flask_socketio
+flask-socketio
 
 # add new packages one per each line
