@@ -32,7 +32,7 @@ def handleconnect(json):
 def handlemessage(json):
     print('in MYMESSAGE',str(json))
     print('the message',json['msg'])
-    tp_index = mobile.index(json['toMobile'])
+#    tp_index = mobile.index(json['toMobile'])
 #    print('tp_index=',tp_index)
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
 #    emit('message',json['msg'],room=clients[tp_index])
