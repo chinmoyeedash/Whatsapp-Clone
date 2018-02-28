@@ -2,15 +2,23 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'native-base';
 
+let direction = 'right';
 //The bubbles that appear on the left or the right for the messages.
 export default class MessageBubble extends Component {
     render() {
-       //These spacers make the message bubble stay to the left or the right, depending on who is speaking, even if the message is multiple lines.
-      const leftSpacer = this.props.direction === 'left' ? null : <View style={{ width: 70 }} />;
-      const rightSpacer = this.props.direction === 'left' ? 
+      const { msgText, sentTime, senderId } = this.props.message;
+      if (this.props.userid === senderId) {
+        direction = 'right';
+      } else {
+        direction = 'left';
+      }
+      console.log(direction);
+      //These spacers make the message bubble stay to the left or the right, depending on who is speaking, even if the message is multiple lines.
+      const leftSpacer = direction === 'left' ? null : <View style={{ width: 70 }} />;
+      const rightSpacer = direction === 'left' ? 
       <View style={{ width: 70 }} /> : null;
   
-      const bubbleStyles = this.props.direction === 'left' ? 
+      const bubbleStyles = direction === 'left' ? 
       [styles.messageBubble, styles.messageBubbleLeft] : [styles.messageBubble, styles.messageBubbleRight];
   
       const bubbleTextStyle = this.props.direction === 'left' ? 
@@ -23,8 +31,8 @@ export default class MessageBubble extends Component {
               <View style={bubbleStyles}>
            
                 <Text style={bubbleTextStyle}>
-                  {this.props.text}
-                  <Text note style={{ justifyContent: 'flex-end', color: 'green' }}>{'\n'}{this.props.time} </Text>
+                  {msgText}
+                  <Text note style={{ justifyContent: 'flex-end', color: 'green' }}>{'\n'}{sentTime} </Text>
                 </Text> 
                 {/* <View style={{ justifyContent: 'flex-end' }}>
                 <Text style={{ fontSize: 10 }}>  

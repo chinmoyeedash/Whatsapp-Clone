@@ -55,18 +55,17 @@ export default class ChatScreen extends Component {
       value: '',
       height: 40
     };
-    this.joinUser = this.joinUser.bind(this);
-    this.onReceivedMessage = this.onReceivedMessage.bind(this);
     
     this.socket = SocketIOClient('http://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
     console.log(this.socket);
     this.socket.on('message', this.onReceivedMessage);
 
+    this.joinUser = this.joinUser.bind(this);
+    this.onReceivedMessage = this.onReceivedMessage.bind(this);
+
     this.joinUser();
     console.log(this.props.navigation.state.params.user_id, this.props.navigation.state.params.friend_id);
     this.sendMessage.bind(this);
-    
-  
   }
 
   onReceivedMessage = (msg) => {
@@ -81,10 +80,11 @@ export default class ChatScreen extends Component {
         console.log(`inside joinuser, state ${JSON.stringify(this.state.user)}`); 
       })
       .catch(error => console.log(error));
-      this.socket.on('connect', () =>  {
+      console.log('going to connect');
+      this.socket.on('connect', () => {
         console.log('in CONNECT');
     //		socket.send('User has connected');
-     		const userid = this.state.user_id;
+        const userid = this.state.user_id;
      //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myConnect', {
           msg: 'User has connected',
@@ -138,31 +138,15 @@ handlePick(emoji) {
   console.log(emoji);
  // this.setState({ value: value + emoji });
 }
-showMessageBubble() {
-  console.log(`inside showMessageBubble, state ${this.state.messages}`);
-  this.state.messages.map((message) => {
-    if (this.state.user_id === message.sender_id) {
-      direction = 'right';
-    } else {
-      direction = 'left';
-    }
-    console.log(direction);
-    return (
-      <MessageBubble key={message.msg_id} direction={direction} text={message.text} time={message.time} />
-    );
-  });
-}
 
 render() {
-    const { value, height } = this.state;
+    const { messages, userid, value, height } = this.state;
     const { navigate } = this.props.navigation;
-    const newStyle = {
-      flex: 1,
-      height
-    };
-
-    // const messages = this.state.messages;
-       
+    // const newStyle = {
+    //   flex: 1,s
+    //   height
+    // };
+    
     return (
       <Container style={{ backgroundColor: '#fbebb0' }}>
        
@@ -194,11 +178,14 @@ render() {
                     {messages}
          </ScrollView> */}
          
-         <View style={{ flex: 1 }}>
-         {this.showMessageBubble()}     
-         {/* <MessageBubble key={0} direction='left' text='hello' />
-         <MessageBubble key={1} direction='left' text='hw r u? ' />
-         <MessageBubble key={2} direction='right' text='i am fine ' /> */}
+         <View style={{ flex: 1 }}>      
+         {/* {this.showMessageBubble()}      */}
+         {messages.map((message) => 
+         <MessageBubble key={message.time} user_id={userid} message={message} />
+         )}
+         {/* <MessageBubble key={0} direction='left' text='hello' time='sds' />
+         <MessageBubble key={1} direction='left' text='hw r u?' time='sssdf' />
+         <MessageBubble key={2} direction='right' text='i am fine ' time='sfsdf' /> */}
          </View>
          
          </Content> 
@@ -210,13 +197,13 @@ render() {
         placeholder="Type a message"
         onChangeText={(value) => this.setState({ value })}
         style={{ borderRadius: 10,
-backgroundColor: 'white',
-borderWidth: 1,
-borderColor: 'gray',
-flex: 1, 
-        fontSize: 16,
-paddingHorizontal: 10,
-height }}
+              backgroundColor: 'white',
+              borderWidth: 1,
+              borderColor: 'gray',
+              flex: 1, 
+                      fontSize: 16,
+              paddingHorizontal: 10,
+              height }}
         editable
         multiline
         value={value}
@@ -267,9 +254,7 @@ height }}
       </Container>
     );
   }
-  
 }
-
 
 //The bar at the bottom with a textbox and a send button.
 // class InputBar extends Component {
