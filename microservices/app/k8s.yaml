@@ -30,7 +30,10 @@ items:
           ports:
           - containerPort: 8080
             protocol: TCP
-          resources: {}
+          # resources: {}
+          resources:
+            requests:
+            memory: 250Mi
         securityContext: {}
         terminationGracePeriodSeconds: 0
   status: {}

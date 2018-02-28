@@ -56,7 +56,7 @@ export default class ChatScreen extends Component {
       height: 40
     };
     
-    this.socket = SocketIOClient('http://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
+    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
     console.log(this.socket);
     this.socket.on('message', this.onReceivedMessage);
 
@@ -181,7 +181,7 @@ render() {
          <View style={{ flex: 1 }}>      
          {/* {this.showMessageBubble()}      */}
          {messages.map((message) => 
-         <MessageBubble key={message.time} user_id={userid} message={message} />
+         <MessageBubble key={message.msg_id} user_id={userid} message={message} />
          )}
          {/* <MessageBubble key={0} direction='left' text='hello' time='sds' />
          <MessageBubble key={1} direction='left' text='hw r u?' time='sssdf' />

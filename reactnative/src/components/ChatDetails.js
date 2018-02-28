@@ -15,8 +15,9 @@ render() {
     } else {
       friend_id = sender_id;
     }
-    const postDate = new Date(sent_time).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
-    return (
+  const postDate = new Date(sent_time).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
+   //const postDate = sent_time; 
+   return (
           
            <ListItem avatar button onPress={() => navigate('ChatScreen', { user_id, friend_id })}>
             {console.log(friend_id)}
