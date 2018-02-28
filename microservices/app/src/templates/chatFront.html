@@ -17,9 +17,6 @@ $(document).ready(function(){
 	
 	socket.on('connect', function(){
 		console.log('in CONNECT');
-//		socket.send('User has connected');
-//		var tp_from_mobile = '8095610638';
-		//var tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
 		socket.emit('myConnect',{
 			msg : 'User has connected',
 			fromMobile : '111'
@@ -32,6 +29,7 @@ $(document).ready(function(){
 		$('#messages').append('<li>'+msg+'</li>');
 		console.log('Received message');
 	});
+
 	$('#sendbutton').on('click',function(){
 		console.log('in Send Button');
 		var tp_msg = $('#myMessage').val();
@@ -43,14 +41,34 @@ $(document).ready(function(){
 			fromMobile : tp_from_number,
 			toMobile : tp_to_number
 	});
-		console.log('emitted my message')
-})
+	console.log('emitted my message');
+	return false;
+	})
+
+	 $('form#emit').submit(function(event) {
+		console.log('in Send form');
+		var tp_msg = $('#myMessage').val();
+		var tp_from_number = $('#fromNumber').val();
+		var tp_to_number = $('#toNumber').val();
+		console.log('MS=',tp_msg,'from :' ,tp_from_number,'to:', tp_to_number);
+                socket.emit('myMessage', {
+				msg : tp_msg,
+				fromMobile : tp_from_number,
+				toMobile : tp_to_number
+			});
+                return false;
+	});
+	
+
 })
 </script>
 <ul id="messages"></ul>
-<input type="text" id="myMessage">
-<input type="text" id="fromNumber">
-<input type="text" id="toNumber">
-<button id="sendbutton">Send</button>
+<form id="emit" method="POST" action='#'>
+	<input type="text" id="myMessage">
+	<input type="text" id="fromNumber">
+	<input type="text" id="toNumber">
+	<!-- <button id="sendbutton">Send</button> -->
+	<input type="submit" value="Send">
+</form>
 </body>
 </html>

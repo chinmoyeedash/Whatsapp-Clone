@@ -1,15 +1,16 @@
 from src import app
-from flask import render_template
-from flask_socketio import SocketIO
+from flask import render_template, session, request
+from flask_socketio import SocketIO, send, emit
 
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
 print("STARTING NOW")
-sockets = []
-#mobile = []
-clients = []
-#sockets[0] = socketio
+
+# sockets = []
+# #mobile = []
+# clients = []
+# #sockets[0] = socketio
 
 @socketio.on('myConnect')
 def handleconnect(json):
@@ -17,8 +18,8 @@ def handleconnect(json):
     print(str(json))
  #   mobile.append(json['fromMobile'])
   #  print(mobile)
-    sockets.append(socketio)
-    print(sockets)
+    # sockets.append(socketio)
+    # print(sockets)
 
  #   clients.append(request.sid)
 
