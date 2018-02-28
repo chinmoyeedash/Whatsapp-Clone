@@ -59,4 +59,3 @@ items:
     loadBalancer: {}
 kind: List
 metadata: {}
-timeout: 120
