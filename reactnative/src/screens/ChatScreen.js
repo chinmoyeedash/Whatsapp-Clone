@@ -10,7 +10,6 @@ import MessageBubble from '../components/MessageBubble';
 const { EmojiOverlay } = require('react-native-emoji-picker');
 
 let user;
-let direction = 'right';
 
 const image = require('../images/kingfisher.jpg');
 
@@ -140,7 +139,7 @@ handlePick(emoji) {
 }
 
 render() {
-    const { messages, userid, value, height } = this.state;
+    const { messages, user_id, value, height } = this.state;
     const { navigate } = this.props.navigation;
     // const newStyle = {
     //   flex: 1,s
@@ -180,14 +179,14 @@ render() {
          
          <View style={{ flex: 1 }}>      
          {/* {this.showMessageBubble()}      */}
-         {messages.map((message) => 
-         <MessageBubble key={message.msg_id} user_id={userid} message={message} />
+         {
+           messages.map((message) => 
+          <MessageBubble key={message.msg_text} user_id={user_id} message={message} />
          )}
          {/* <MessageBubble key={0} direction='left' text='hello' time='sds' />
          <MessageBubble key={1} direction='left' text='hw r u?' time='sssdf' />
          <MessageBubble key={2} direction='right' text='i am fine ' time='sfsdf' /> */}
          </View>
-         
          </Content> 
          <View style={styles.inputBar}>
          <Button transparent onPress={this.openEmoji.bind(this, value)}>

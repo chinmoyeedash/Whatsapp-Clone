@@ -7,21 +7,21 @@ socketio = SocketIO(app)
 
 print("STARTING NOW")
 
-# sockets = []
-# #mobile = []
-# clients = []
+sockets = []
+mobile = []
+clients = []
+
 # #sockets[0] = socketio
 
 @socketio.on('myConnect')
 def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
- #   mobile.append(json['fromMobile'])
-  #  print(mobile)
-    # sockets.append(socketio)
-    # print(sockets)
-
- #   clients.append(request.sid)
+#     mobile.append(json['fromMobile'])
+#     print(mobile)
+#     sockets.append(socketio)
+#     print(sockets)
+#    clients.append(request.sid)
 
     
 #   print('Message is ' + msg)
@@ -32,10 +32,12 @@ def handleconnect(json):
 def handlemessage(json):
     print('in MYMESSAGE',str(json))
     print('the message',json['msg'])
-#    tp_index = mobile.index(json['toMobile'])
+    tp_index = mobile.index(json['toMobile'])
 #    print('tp_index=',tp_index)
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
 #    emit('message',json['msg'],room=clients[tp_index])
+    emit('message',json['msg'])
+
 #   print('Message is ' + msg)
 #   print('from mobile' + str(fromMobile))
 #   print('to Mobile' + str(toMobile))
