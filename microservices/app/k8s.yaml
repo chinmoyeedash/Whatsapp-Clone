@@ -33,7 +33,7 @@ items:
           # resources: {}
           resources:
             requests:
-            memory: 250Mi
+              memory: 250Mi
         securityContext: {}
         terminationGracePeriodSeconds: 0
   status: {}

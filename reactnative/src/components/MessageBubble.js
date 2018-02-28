@@ -7,7 +7,10 @@ let direction = 'right';
 export default class MessageBubble extends Component {
     render() {
       const { msg_text, sent_time, sender_id } = this.props.message;
-      if (this.props.userid === sender_id) {
+      console.log(this.props.user_id);
+      console.log(sender_id);
+
+      if (this.props.user_id === sender_id) {
         direction = 'right';
       } else {
         direction = 'left';
