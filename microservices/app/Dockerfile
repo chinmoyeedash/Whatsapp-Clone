@@ -19,4 +19,5 @@ COPY . /app
 
 # run gunicorn server
 # port is configured through the gunicorn config file
-CMD ["gunicorn", "--config", "./conf/gunicorn_config.py", "src:app"]
+#CMD ["gunicorn", "--config", "./conf/gunicorn_config.py", "src:app"]
+CMD ["gunicorn", "--config", "./conf/gunicorn_config.py", "-k",  "gevent", "src:app"]
