@@ -32,6 +32,8 @@ items:
             protocol: TCP
           # resources: {}
           resources:
+            limits:
+              memory: 250Mi
             requests:
               memory: 250Mi
         securityContext: {}
