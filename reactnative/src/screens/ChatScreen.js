@@ -55,16 +55,22 @@ export default class ChatScreen extends Component {
       height: 40
     };
     
-    this.socket = SocketIOClient('127.0.0.1/:5000', { transports: ['websocket'] });
+    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
+    this.socket.open();
+    this.socket.connect();
     console.log(this.socket);
     this.socket.on('message', this.onReceivedMessage);
 
     this.joinUser = this.joinUser.bind(this);
     this.onReceivedMessage = this.onReceivedMessage.bind(this);
 
-    this.joinUser();
+    
     console.log(this.props.navigation.state.params.user_id, this.props.navigation.state.params.friend_id);
     this.sendMessage.bind(this);
+  }
+
+  componentDidMount() {
+    this.joinUser();
   }
 
   onReceivedMessage = (msg) => {
@@ -80,6 +86,7 @@ export default class ChatScreen extends Component {
       })
       .catch(error => console.log(error));
       console.log('going to connect');
+      
       this.socket.on('connect', () => {
         console.log('in CONNECT');
     //		socket.send('User has connected');
