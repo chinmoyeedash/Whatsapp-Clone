@@ -34,7 +34,7 @@ def handlemessage(json):
 	tp_index = mobile.index(json['toMobile'])
 	print('tp_index=',tp_index)
 #	socketio.to(sockets[tp_index]).emit('message',json['msg'])
-	emit('inmessage',json['msg'],room=clients[tp_index])
+	emit('message',json['msg'],room=clients[tp_index])
 #	print('Message is ' + msg)
 #	print('from mobile' + str(fromMobile))
 #	print('to Mobile' + str(toMobile))
@@ -46,4 +46,9 @@ def handlemessage2(msg):
 	print('in message handler '+msg)
 
 if __name__ == '__main__':
-	socketio.run(app)
+    # socketio.run(app)
+    socketio.run(app, host='https://app.crawfish92.hasura-app.io')
+	
+@app.route("/")
+def home():
+    return render_template('chatFront.html')
