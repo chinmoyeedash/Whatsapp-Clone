@@ -21,7 +21,7 @@ clients = []
 def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
-    mobile.append(json['user_id'])
+    mobile.append(json['fromuserid'])
     print(mobile)
     clients.append(request.sid)
 #     sockets.append(socketio)
