@@ -1,7 +1,7 @@
+from src import app
 from flask import render_template, session, request
 from flask_socketio import SocketIO,send,emit
 
-app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
