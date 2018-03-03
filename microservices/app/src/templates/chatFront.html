@@ -37,6 +37,7 @@ $(document).ready(function(){
 //		socket.send('User has connected');
 //		var tp_from_mobile = '8095610638';
 		var tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
+		console.log(tp_from_mobile);
 		socket.emit('myConnect',{
 			msg : 'User has connected',
 			fromMobile : tp_from_mobile
