@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import render_template, session, request
 from flask_socketio import SocketIO,send,emit
 
 app = Flask(__name__)
@@ -11,6 +11,10 @@ mobile = []
 clients = []
 #sockets[0] = socketio
 
+@app.route("/")
+def home():
+    return render_template('chatFront.html')
+
 @socketio.on('myConnect')
 def handleconnect(json):
 	print('in MYCONNECT')
@@ -19,7 +23,6 @@ def handleconnect(json):
 	print(mobile)
 	sockets.append(socketio)
 	print(sockets)
-
 	clients.append(request.sid)
 
 	
@@ -49,6 +52,4 @@ if __name__ == '__main__':
     # socketio.run(app)
     socketio.run(app, host='https://app.crawfish92.hasura-app.io')
 	
-@app.route("/")
-def home():
-    return render_template('chatFront.html')
+
