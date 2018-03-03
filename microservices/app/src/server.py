@@ -4,15 +4,15 @@ from flask_socketio import SocketIO, send, emit
 
 app.config['SECRET_KEY'] = 'mysecret'
 params = {
-	'ping_timeout': 10,
-	'ping_interval': 5
+	'ping_timeout': 30000,
+	'ping_interval': 30000
 }
 socketio = SocketIO(app, **params)
 
 print("STARTING NOW")
 
 sockets = []
-users = []
+mobile = []
 clients = []
 
 # #sockets[0] = socketio
