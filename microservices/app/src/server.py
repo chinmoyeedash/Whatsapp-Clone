@@ -21,9 +21,13 @@ clients = []
 def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
-    mobile.append(json['fromuserid'])
+    fromuserid = json['fromuserid']
+    if fromuserid not in mobile:
+        mobile.append(fromuserid)
     print(mobile)
     clients.append(request.sid)
+    print(clients)
+    
 #     sockets.append(socketio)
 #     print(sockets)
     
@@ -40,10 +44,10 @@ def handlemessage(json):
     tp_index = mobile.index(json['receiver_id'])
     print('tp_index=',tp_index)
     emit('message',json['msg_text'],room=clients[tp_index])
-    print('Message is ' + msg_text)
-    print('sent time ' + sent_time)
-    print('sender_id' + str(sender_id))
-    print('receiver_id' + str(receiver_id))
+    print('Message is ' + json['msg_text'])
+    print('sent time ' + json['sent_time'])
+    print('sender_id' + json['sender_id'])
+    print('receiver_id' + json['receiver_id'])
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
     
     #emit('message',json['msg'])

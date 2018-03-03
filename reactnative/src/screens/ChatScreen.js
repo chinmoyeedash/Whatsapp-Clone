@@ -58,7 +58,7 @@ export default class ChatScreen extends Component {
     
     this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
     // this.socket.open();
-    this.socket.connect();
+    
     console.log(this.socket);
     this.socket.on('message', this.onReceivedMessage);
 
@@ -76,6 +76,10 @@ export default class ChatScreen extends Component {
 
   componentDidMount() {
     this.joinUser();
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
 
   onReceivedPrevMessages = async () => {
@@ -117,11 +121,11 @@ export default class ChatScreen extends Component {
       this.socket.on('connect', () => {
         console.log('in CONNECT');
     //		socket.send('User has connected');
-        const userid = this.state.user_id;
+        const userid = '1';
      //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myConnect', {
           msg: 'User has connected',
-          fromMobile: userid
+          fromuserid: userid
         });
       });
   }
@@ -289,6 +293,8 @@ render() {
       </Container>
     );
   }
+
+  
 }
 
 //The bar at the bottom with a textbox and a send button.
