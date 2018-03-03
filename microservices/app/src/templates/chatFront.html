@@ -1,3 +1,20 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Marketplace
+Explore
+ @chinmoyeedash
+ Sign out
+0
+0 0 nalini-rangamani/basic-chat
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights
+basic-chat/chatFront.html
+817deff  9 days ago
+@nalini-rangamani nalini-rangamani chat
+     
+59 lines (51 sloc)  1.61 KB
 <html>
 <head>
 <Title>Chat Room </Title>
@@ -6,7 +23,7 @@
 </head>
 <body>
 <script type="text/javascript">
-	console.log('STARTING client')
+	console.log('STARTING')
 $(document).ready(function(){
 	
 	console.log('in fun');
@@ -17,111 +34,40 @@ $(document).ready(function(){
 	
 	socket.on('connect', function(){
 		console.log('in CONNECT');
+//		socket.send('User has connected');
+//		var tp_from_mobile = '8095610638';
+		var tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
 		socket.emit('myConnect',{
 			msg : 'User has connected',
-			fromuserid : '2'
+			fromMobile : tp_from_mobile
 		});
 	});
 //		socket.send('User has connected!',$('#fromNumber').val());
 	
 	socket.on('message',function(msg){
 		console.log('IN MESSAGE')
-		$('#messages').append('<li>'+msg_text+'</li>');
+		$('#messages').append('<li>'+msg+'</li>');
 		console.log('Received message');
 	});
-
-	// $('#sendbutton').on('click',function(){
-	// 	console.log('in Send Button');
-	// 	var tp_msg = $('#myMessage').val();
-	// 	var tp_from_number = $('#fromNumber').val();
-	// 	var tp_to_number = $('#toNumber').val();
-	// 	console.log('MS=',tp_msg,'from :' ,tp_from_number,'to:', tp_to_number);
-	// 	socket.emit('myMessage',{
-	// 		msg : tp_msg,
-	// 		fromMobile : tp_from_number,
-	// 		toMobile : tp_to_number
-	// });
-	// console.log('emitted my message');
-	// return false;
-	// })
-
-	 $('form#emit').submit(function(event) {
-		console.log('in Send form');
-		var tp_msg = $('#mymessage').val();
-		var tp_from_number = $('#fromuserid').val();
-		var tp_to_number = $('#touserid').val();
+	$('#sendbutton').on('click',function(){
+		console.log('in Send Button');
+		var tp_msg = $('#myMessage').val();
+		var tp_from_number = $('#fromNumber').val();
+		var tp_to_number = $('#toNumber').val();
 		console.log('MS=',tp_msg,'from :' ,tp_from_number,'to:', tp_to_number);
-                socket.emit('myMessage', {
-					msg_text: tp_msg,
-					sent_time: new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3'),
-					sender_id: '2',
-     				receiver_id: tp_to_number,
-			});
-                return false;
+		socket.emit('myMessage',{
+			msg : tp_msg,
+			fromMobile : tp_from_number,
+			toMobile : tp_to_number
 	});
-	
-
+		console.log('emitted my message')
+})
 })
 </script>
 <ul id="messages"></ul>
-<!-- <form id="emit" method="POST" action='#'>
-	<input type="text" id="myMessage">
-	<input type="text" id="fromNumber">
-	<input type="text" id="toNumber">
-	<!-- <button id="sendbutton">Send</button> 
-	<input type="submit" value="Send">
-</form> -->
-<form id="emit" name="htmlform" method="post" action="#">
-	<table width="450px">
-	</tr>
-	<!-- <tr>
-	 <td valign="top">
-	  <label for="first_name">First Name *</label>
-	 </td>
-	 <td valign="top">
-	  <input  type="text" name="first_name" maxlength="50" size="30">
-	 </td>
-	</tr>
-	
-	<tr>
-	 <td valign="top"">
-	  <label for="last_name">Last Name *</label>
-	 </td>
-	 <td valign="top">
-	  <input  type="text" name="last_name" maxlength="50" size="30">
-	 </td>
-	</tr> -->
-	<tr>
-	 <td valign="top">
-	  <label for="From UserID">From UserID</label>
-	 </td>
-	 <td valign="top">
-	  <input  type="text" name="From UserID" maxlength="80" size="30" id="fromuserid">
-	 </td>	
-	</tr>
-	<tr>
-		<td valign="top">
-		 <label for="To UserID">To UserID</label>
-		</td>
-		<td valign="top">
-		 <input  type="To" name="To UserID" maxlength="80" size="30" id="touserid">
-		</td>	
-	</tr>
-	 <td valign="top">
-	  <label for="Message">Message </label>
-	 </td>
-	 <td valign="top">
-	  <textarea  name="Message" maxlength="1000" cols="25" rows="6" id="mymessage"></textarea>
-	 </td>
-	
-	</tr>
-	<tr>
-	 <td colspan="2" style="text-align:center">
-	  <input type="submit" value="Send Message">   
-	 </td>
-	</tr>
-	</table>
-	</form>
-
+<input type="text" id="myMessage">
+<input type="text" id="fromNumber">
+<input type="text" id="toNumber">
+<button id="sendbutton">Send</button>
 </body>
 </html>
