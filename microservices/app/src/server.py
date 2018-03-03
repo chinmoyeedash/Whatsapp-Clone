@@ -34,14 +34,14 @@ def handlemessage(json):
 	tp_index = mobile.index(json['toMobile'])
 	print('tp_index=',tp_index)
 #	socketio.to(sockets[tp_index]).emit('message',json['msg'])
-	emit('message',json['msg'],room=clients[tp_index])
+	emit('inmessage',json['msg'],room=clients[tp_index])
 #	print('Message is ' + msg)
 #	print('from mobile' + str(fromMobile))
 #	print('to Mobile' + str(toMobile))
 #	socketio.emit()
 #	send(msg,broadcast=True)
 
-@socketio.on('message')
+@socketio.on('message2')
 def handlemessage2(msg):
 	print('in message handler '+msg)
 
