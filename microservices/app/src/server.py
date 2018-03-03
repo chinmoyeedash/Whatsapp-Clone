@@ -3,12 +3,16 @@ from flask import render_template, session, request
 from flask_socketio import SocketIO, send, emit
 
 app.config['SECRET_KEY'] = 'mysecret'
-socketio = SocketIO(app)
+params = {
+	'ping_timeout': 10,
+	'ping_interval': 5
+}
+socketio = SocketIO(app, **params)
 
 print("STARTING NOW")
 
 sockets = []
-mobile = []
+users = []
 clients = []
 
 # #sockets[0] = socketio
@@ -17,11 +21,11 @@ clients = []
 def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
-#     mobile.append(json['fromMobile'])
-#     print(mobile)
+     mobile.append(json['user_id'])
+     print(mobile)
 #     sockets.append(socketio)
 #     print(sockets)
-#    clients.append(request.sid)
+    clients.append(request.sid)
 
     
 #   print('Message is ' + msg)
@@ -31,16 +35,17 @@ def handleconnect(json):
 @socketio.on('myMessage')
 def handlemessage(json):
     print('in MYMESSAGE',str(json))
-    print('the message',json['msg'])
-#    tp_index = mobile.index(json['toMobile'])
-#    print('tp_index=',tp_index)
+    print('the message',json['msg_text'])
+    tp_index = mobile.index(json['receiver_id'])
+    print('tp_index=',tp_index)
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
-#    emit('message',json['msg'],room=clients[tp_index])
-    emit('message',json['msg'])
+    emit('message',json['msg_text'],room=clients[tp_index])
+    #emit('message',json['msg'])
 
-#   print('Message is ' + msg)
-#   print('from mobile' + str(fromMobile))
-#   print('to Mobile' + str(toMobile))
+   print('Message is ' + msg_text)
+   print('sent time ' + sent_time)
+   print('sender_id' + str(sender_id))
+   print('receiver_id' + str(receiver_id))
 #   socketio.emit()
 #   send(msg,broadcast=True)
 

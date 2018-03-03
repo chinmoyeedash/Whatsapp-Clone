@@ -43,9 +43,7 @@ export default class MessageBubble extends Component {
                   </Text>     
                   </View> */}
               </View>
-              
-                
-              {rightSpacer}
+                {rightSpacer}
             </View>
         );
     }

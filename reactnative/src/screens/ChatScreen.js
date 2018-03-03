@@ -5,58 +5,59 @@ import {
 import { Container, Header, Content, Item, Input, Left, Right, Button, Body, Thumbnail, Title, View, Icon } from 'native-base';
 import SocketIOClient from 'socket.io-client';
 import MessageBubble from '../components/MessageBubble';
+import { getAllMessages } from '../chatsappapi';
 
 
 const { EmojiOverlay } = require('react-native-emoji-picker');
 
 let user;
-
 const image = require('../images/kingfisher.jpg');
 
 export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
-    const messages = [
-    {
-        recd_time: 'February 14, 2018 23:16:30 GMT+11:00',
-        user_mobilenumber: 9283498234,
-        msg_text: 'hello',
-        msg_id: 1,
-        receiver_id: 2,
-        sent_time: 'February 14, 2018 23:16:30 GMT+11:00',
-        sender_id: 1
-    },
-    {
-        recd_time: 'February 14, 2018 23:20:30 GMT+11:00',
-        user_mobilenumber: 9283498234,
-        msg_text: 'how r u',
-        msg_id: 2,
-        receiver_id: 2,
-        sent_time: 'February 14, 2018 23:20:30 GMT+11:00',
-        sender_id: 1
-    },
-    {
-        recd_time: 'February 14, 2018 23:25:40 GMT+11:00',
-        user_mobilenumber: 9888888888,
-        msg_text: 'I am fine.. busy!!',
-        msg_id: 3,
-        receiver_id: 1,
-        sent_time: 'February 14, 2018 23:25:30 GMT+11:00',
-        sender_id: 2
-    }
-];
+    this.onReceivedPrevMessages = this.onReceivedPrevMessages.bind(this);
+//     const messages = [
+//     {
+//         recd_time: 'February 14, 2018 23:16:30 GMT+11:00',
+//         user_mobilenumber: 9283498234,
+//         msg_text: 'hello',
+//         msg_id: 1,
+//         receiver_id: 2,
+//         sent_time: 'February 14, 2018 23:16:30 GMT+11:00',
+//         sender_id: 1
+//     },
+//     {
+//         recd_time: 'February 14, 2018 23:20:30 GMT+11:00',
+//         user_mobilenumber: 9283498234,
+//         msg_text: 'how r u',
+//         msg_id: 2,
+//         receiver_id: 2,
+//         sent_time: 'February 14, 2018 23:20:30 GMT+11:00',
+//         sender_id: 1
+//     },
+//     {
+//         recd_time: 'February 14, 2018 23:25:40 GMT+11:00',
+//         user_mobilenumber: 9888888888,
+//         msg_text: 'I am fine.. busy!!',
+//         msg_id: 3,
+//         receiver_id: 1,
+//         sent_time: 'February 14, 2018 23:25:30 GMT+11:00',
+//         sender_id: 2
+//     }
+// ];
     this.state = {
       user,
       user_id: this.props.navigation.state.params.user_id,
       friend_id: this.props.navigation.state.params.friend_id,
       showPicker: false,
-      messages,
+      messages: [],
       value: '',
       height: 40
     };
     
     this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
-    this.socket.open();
+    // this.socket.open();
     this.socket.connect();
     console.log(this.socket);
     this.socket.on('message', this.onReceivedMessage);
@@ -69,12 +70,38 @@ export default class ChatScreen extends Component {
     this.sendMessage.bind(this);
   }
 
+  componentWillMount() {
+      this.onReceivedPrevMessages();
+  }
+
   componentDidMount() {
     this.joinUser();
   }
 
+  onReceivedPrevMessages = async () => {
+    const prevMessages = [];
+    const response = await getAllMessages(this.state.user_id, this.state.friend_id);
+    //skipping first row 
+    for (let i = 1; i < response.result.length; i++) {
+      prevMessages.push({
+        msg_id: response.result[i][0],
+        msg_text: response.result[i][1],
+        sent_time: response.result[i][2],
+        recd_time: response.result[i][3],
+        sender_id: response.result[i][4],
+        receiver_id: response.result[i][5],
+        user_id: response.result[i][4]
+    });
+    }
+    console.log(prevMessages);
+    this.setState({ messages: prevMessages });
+  }
+
   onReceivedMessage = (msg) => {
     console.log(msg);
+    const oldMessages = this.state.messages;
+  // React will automatically rerender the component when a new message is added.
+  this.setState({ messages: oldMessages.concat(msg) });
   }
 
   joinUser() {
@@ -109,23 +136,25 @@ export default class ChatScreen extends Component {
   sendMessage(msgValue) {
     console.log(this.state.value);
     console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', this.state.friend_id);
-		this.socket.emit('myMessage', {
-			msg: msgValue,
-			fromMobile: this.state.user_id,
-			toMobile: this.state.friend_id,
-    });
+    const msg = {
+			msg_text: msgValue,
+      sent_time: new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3'),
+      sender_id: this.state.user_id,
+      receiver_id: this.state.friend_id,
+    };
+    this.socket.emit('myMessage', msg);
     
 		console.log('emitted my message');
-    this.state.messages.push({
-      recd_time: null,
-      user_mobilenumber: this.state.user.mobilenumber,
-      msg_text: msgValue,
-      // need not pass msgid for db
-      msg_id: 4,
-      receiver_id: this.state.friend_id,
-      sent_time: new Date(),
-      sender_id: this.state.user_id
-  });
+     this.state.messages.push(msg);
+  //     recd_time: null,
+  //     user_mobilenumber: this.state.user.mobilenumber,
+  //     msg_text: msgValue,
+  //     // need not pass msgid for db
+  //     msg_id: 4,
+  //     receiver_id: this.state.friend_id,
+  //     sent_time: new Date(),
+  //     sender_id: this.state.user_id
+  // });
 
     this.setState({
       messages: this.state.messages,
@@ -170,7 +199,7 @@ render() {
               transparent
               onPress={() => navigate('Contact')} 
             >    */}
-            <Title onPress={() => navigate('Contact')}>Chinmoyee </Title>
+            <Title onPress={() => navigate('Contact', { friend_id: this.state.friend_id })}>Chinmoyee </Title>
             {/* </Button> */}
           </Body>
           {/* <Right>

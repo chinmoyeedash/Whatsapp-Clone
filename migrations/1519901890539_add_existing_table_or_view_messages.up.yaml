@@ -1,0 +1,3 @@
+- args:
+    name: messages
+  type: add_existing_table_or_view
