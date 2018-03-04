@@ -3,11 +3,7 @@ from flask import render_template, session, request
 from flask_socketio import SocketIO, send, emit
 
 app.config['SECRET_KEY'] = 'mysecret'
-params = {
-	'ping_timeout': 30000,
-	'ping_interval': 30000
-}
-socketio = SocketIO(app, **params)
+socketio = SocketIO(app)
 
 print("STARTING NOW")
 
@@ -22,8 +18,8 @@ def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
     fromuserid = json['fromuserid']
-    if fromuserid not in mobile:
-        mobile.append(fromuserid)
+    #if fromuserid not in mobile:
+    mobile.append(fromuserid)
     clients.append(request.sid)
     print(mobile)
     print(clients)
@@ -34,7 +30,7 @@ def handleconnect(json):
 #   sockets.append(socketio)
 
 @socketio.on('disconnect')
-def handleconnect(json):
+def handledisconnect(json):
     print('in MYCONNECT')
 
 @socketio.on('myMessage')

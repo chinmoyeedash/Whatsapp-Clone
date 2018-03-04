@@ -56,7 +56,7 @@ export default class ChatScreen extends Component {
       height: 40
     };
     
-    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
+    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'], reconnection: false });
     // this.socket.open();
     
     console.log(this.socket);
