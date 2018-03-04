@@ -1,0 +1,74 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Marketplace
+Explore
+ @chinmoyeedash
+ Sign out
+0
+0 0 nalini-rangamani/basic-chat
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights
+basic-chat/chatFront.html
+817deff  9 days ago
+@nalini-rangamani nalini-rangamani chat
+     
+59 lines (51 sloc)  1.61 KB
+<html>
+<head>
+<Title>Chat Room </Title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+	console.log('STARTING')
+$(document).ready(function(){
+	
+	console.log('in fun');
+	
+	var socket = io.connect('https://app.crawfish92.hasura-app.io/', {reconnection: false});
+	
+	console.log('after var socket',socket);
+	
+	socket.on('connect', function(){
+		console.log('in CONNECT');
+//		socket.send('User has connected');
+//		var tp_from_mobile = '8095610638';
+		var tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
+		console.log(tp_from_mobile);
+		socket.emit('myConnect',{
+			msg : 'User has connected',
+			fromMobile : tp_from_mobile
+		});
+	});
+//		socket.send('User has connected!',$('#fromNumber').val());
+	
+	socket.on('inmessage',function(msg){
+		console.log('IN MESSAGE')
+		$('#messages').append('<li>'+msg+'</li>');
+		console.log('Received message');
+	});
+	$('#sendbutton').on('click',function(){
+		console.log('in Send Button');
+		var tp_msg = $('#myMessage').val();
+		var tp_from_number = $('#fromNumber').val();
+		var tp_to_number = $('#toNumber').val();
+		console.log('MS=',tp_msg,'from :' ,tp_from_number,'to:', tp_to_number);
+		socket.emit('myMessage',{
+			msg : tp_msg,
+			fromMobile : tp_from_number,
+			toMobile : tp_to_number
+	});
+		console.log('emitted my message')
+})
+})
+</script>
+<ul id="messages"></ul>
+<input type="text" id="myMessage">
+<input type="text" id="fromNumber">
+<input type="text" id="toNumber">
+<button id="sendbutton">Send</button>
+</body>
+</html>
