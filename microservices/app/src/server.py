@@ -24,7 +24,7 @@ def handleconnect(json):
     fromuserid = json['fromuserid']
     if fromuserid not in mobile:
         mobile.append(fromuserid)
-        clients.append(request.sid)
+    clients.append(request.sid)
     print(mobile)
     print(clients)
 #     sockets.append(socketio)
