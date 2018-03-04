@@ -28,13 +28,19 @@ def handleconnect(json):
 #	print('from mobile' + str(fromMobile))
 #	sockets.append(socketio)
 
+@socketio.on('disconnect')
+def test_disconnect():
+    clients.remove(request.sid)
+    print('Client disconnected')
+
 @socketio.on('myMessage')
 def handlemessage(json):
 	print('in MYMESSAGE',str(json))
 	print('the message',json['msg'])
 	tp_index = mobile.index(json['toMobile'])
 	print('tp_index=',tp_index)
-	emit('message',json['msg'],room=clients[tp_index])
+#	socketio.to(sockets[tp_index]).emit('message',json['msg'])
+	emit('message',json['msg'],room=clients[tp_index])      
 #	socketio.to(sockets[tp_index]).emit('message',json['msg'])
 #	print('Message is ' + msg)
 #	print('from mobile' + str(fromMobile))
