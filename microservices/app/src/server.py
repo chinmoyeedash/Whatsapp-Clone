@@ -62,7 +62,7 @@ def handlemessage2(msg):
 	
 if __name__ == '__main__':
     # socketio.run(app)
-    socketio.run(app, host='https://app.crawfish92.hasura-app.io')
+    #socketio.run(app, host='https://app.crawfish92.hasura-app.io')
 	
 @app.route("/")
 def home():

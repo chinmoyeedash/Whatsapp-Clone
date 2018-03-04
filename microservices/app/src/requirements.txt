@@ -1,7 +1,8 @@
 flask
 requests
-gevent
-gevent-websocket
+#gevent
+#gevent-websocket
+eventlet
 gunicorn
 flask-socketio
 
