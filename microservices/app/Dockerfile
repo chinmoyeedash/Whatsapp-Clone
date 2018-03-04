@@ -20,4 +20,4 @@ COPY . /app
 # run gunicorn server
 # port is configured through the gunicorn config file
 #CMD ["gunicorn", "--config", "./conf/gunicorn_config.py", "src:app"]
-CMD ["gunicorn", "--config", "./conf/gunicorn_config.py", "-k",  "geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "src:app"]
+CMD ["gunicorn", "--config", "./conf/gunicorn_config.py", "-k",  "geventwebsocket.gunicorn.workers.GeventWebSocketWorker",  -w 1, "src:app" -b 0.0.0.0:5000 --log-file /gunicorn.log]
