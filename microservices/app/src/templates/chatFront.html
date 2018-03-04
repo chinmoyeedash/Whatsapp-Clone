@@ -28,7 +28,7 @@ $(document).ready(function(){
 	
 	console.log('in fun');
 	
-	var socket = io.connect('https://app.crawfish92.hasura-app.io/');
+	var socket = io.connect('https://app.crawfish92.hasura-app.io/', {reconnection: false});
 	
 	console.log('after var socket',socket);
 	
