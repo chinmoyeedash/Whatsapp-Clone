@@ -25,8 +25,9 @@ $(document).ready(function(){
 	});
 //		socket.send('User has connected!',$('#fromNumber').val());
 	
-	socket.on('message',function(msg){
+	socket.on('message',function(msg_text){
 		console.log('IN MESSAGE')
+		console.log(msg_text)
 		$('#messages').append('<li>'+msg_text+'</li>');
 		console.log('Received message');
 	});
