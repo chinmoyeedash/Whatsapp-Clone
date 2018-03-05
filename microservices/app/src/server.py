@@ -44,7 +44,15 @@ def handlemessage(jsondata):
     tp_index = mobile.index(jsondata['receiver_id'])
     print('tp_index=',tp_index)
 #    emit('message',json['msg'])
-    emit('message',jsondata['msg_text'],room=clients[tp_index])
+    jsonresp =  {
+        "sent_time": jsondata['sent_time'],
+        "msg_text": jsondata['msg_text'],
+        "user_id": jsondata['sender_id'],
+        "receiver_id": jsondata['receiver_id'],
+        "sender_id": jsondata['sender_id'],
+        "recd_time": "NULL"
+    }
+    emit('message',jsonresp,room=clients[tp_index])
     print('Message is ' + jsondata['msg_text'])
     print('sent time ' + jsondata['sent_time'])
     print('sender_id' + jsondata['sender_id'])
