@@ -88,7 +88,6 @@ export default class ChatScreen extends Component {
     //skipping first row 
     for (let i = 1; i < response.result.length; i++) {
       prevMessages.push({
-        msg_id: response.result[i][0],
         msg_text: response.result[i][1],
         sent_time: response.result[i][2],
         recd_time: response.result[i][3],
@@ -105,7 +104,7 @@ export default class ChatScreen extends Component {
     console.log(msg);
     const oldMessages = this.state.messages;
   // React will automatically rerender the component when a new message is added.
-  this.setState({ messages: oldMessages.concat(msg) });
+   this.setState({ messages: oldMessages.concat(msg) });
   }
 
   joinUser() {

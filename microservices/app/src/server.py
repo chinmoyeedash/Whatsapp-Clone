@@ -38,17 +38,17 @@ def handledisconnect(json):
     clients.remove(request.sid)
 
 @socketio.on('myMessage')
-def handlemessage(json):
-    print('in MYMESSAGE',str(json))
-    print('the message',json['msg_text'])
-    tp_index = mobile.index(json['receiver_id'])
+def handlemessage(jsondata):
+    print('in MYMESSAGE',str(jsondata))
+    print('the message',jsondata['msg_text'])
+    tp_index = mobile.index(jsondata['receiver_id'])
     print('tp_index=',tp_index)
 #    emit('message',json['msg'])
-    emit('message',json['msg_text'],room=clients[tp_index])
-    print('Message is ' + json['msg_text'])
-    print('sent time ' + json['sent_time'])
-    print('sender_id' + json['sender_id'])
-    print('receiver_id' + json['receiver_id'])
+    emit('message',jsondata['msg_text'],room=clients[tp_index])
+    print('Message is ' + jsondata['msg_text'])
+    print('sent time ' + jsondata['sent_time'])
+    print('sender_id' + jsondata['sender_id'])
+    print('receiver_id' + jsondata['receiver_id'])
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
     #emit('message',json['msg'])
 #   socketio.emit()
@@ -61,11 +61,11 @@ def handlemessage(json):
         "table": "messages",
         "objects": [
             {
-                "sent_time": json['sent_time'],
-                "msg_text": json['msg_text'],
-                "user_id": json['sender_id'],
-                "receiver_id": json['receiver_id'],
-                "sender_id": json['sender_id'],
+                "sent_time": jsondata['sent_time'],
+                "msg_text": jsondata['msg_text'],
+                "user_id": jsondata['sender_id'],
+                "receiver_id": jsondata['receiver_id'],
+                "sender_id": jsondata['sender_id'],
                 "recd_time": "NULL"
             }
         ]
