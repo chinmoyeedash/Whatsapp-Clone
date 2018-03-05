@@ -128,6 +128,17 @@ export default class ChatScreen extends Component {
           fromuserid: userid
         });
       });
+
+      this.socket.on('disconnect', () => {
+        console.log('in DICONNECT');
+    //		socket.send('User has connected');
+        const userid = '1';
+     //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
+        this.socket.emit('myDisconnect', {
+          msg: 'User has disconnected',
+          fromuserid: userid
+        });
+      });
   }
 
   updateSize = (height) => {
