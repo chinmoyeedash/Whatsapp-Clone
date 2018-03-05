@@ -1,6 +1,8 @@
 from src import app
 from flask import render_template, session, request
 from flask_socketio import SocketIO, send, emit
+import requests
+import json
 
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
@@ -31,7 +33,7 @@ def handleconnect(json):
 
 @socketio.on('myDisonnect')
 def handledisconnect(json):
-    print('in MYCONNECT')
+    print('in MYDISCONNECT')
     mobile.remove(json['fromuserid'])
     clients.remove(request.sid)
 
@@ -48,10 +50,36 @@ def handlemessage(json):
     print('sender_id' + json['sender_id'])
     print('receiver_id' + json['receiver_id'])
 #   socketio.to(sockets[tp_index]).emit('message',json['msg'])
-    
     #emit('message',json['msg'])
 #   socketio.emit()
 #   send(msg,broadcast=True)
+    url = "https://data.crawfish92.hasura-app.io/v1/query"
+    # This is the json payload for the query
+    requestPayload = {
+        "type": "insert",
+        "args": {
+        "table": "messages",
+        "objects": [
+            {
+                "sent_time": json['sent_time'],
+                "msg_text": json['msg_text'],
+                "user_id": json['sender_id'],
+                "receiver_id": json['receiver_id'],
+                "sender_id": json['sender_id'],
+                "recd_time": "NULL"
+            }
+        ]
+    }
+    }
+    # Setting headers
+    headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer 6367e4fc89e80a142071170876248bf65157081698930b18"
+    }
+    # Make the query and store response in resp
+    resp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
+    # resp.content contains the json response.
+    print(resp.content)
 
 @socketio.on('disconnect')
 def test_disconnect():

@@ -56,7 +56,7 @@ export default class ChatScreen extends Component {
       height: 40
     };
     
-    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'], reconnection: false });
+    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
     // this.socket.open();
     
     console.log(this.socket);
@@ -151,9 +151,11 @@ export default class ChatScreen extends Component {
   sendMessage(msgValue) {
     console.log(this.state.value);
     console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', this.state.friend_id);
+    const now = new Date();
+    console.log(now);
     const msg = {
 			msg_text: msgValue,
-      sent_time: new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3'),
+      sent_time: now,
       sender_id: this.state.user_id,
       receiver_id: this.state.friend_id,
     };
