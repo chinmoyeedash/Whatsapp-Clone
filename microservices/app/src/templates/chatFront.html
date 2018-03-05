@@ -11,7 +11,7 @@ $(document).ready(function(){
 	
 	console.log('in fun');
 	
-	var socket = io.connect('https://app.crawfish92.hasura-app.io/', {reconnection: false});
+	var socket = io.connect('https://app.crawfish92.hasura-app.io/');
 	var fromuserid;
 	console.log('after var socket',socket);
 	
@@ -24,7 +24,14 @@ $(document).ready(function(){
 		});
 	});
 //		socket.send('User has connected!',$('#fromNumber').val());
-	
+socket.on('disconnect', function(){
+		console.log('in CONNECT');
+		fromuserid = decodeURIComponent(window.location.search.match(/(\?|&)userid\=([^&]*)/)[2]);
+		socket.emit('myDisonnect',{
+			msg : 'User has connected',
+			fromuserid : fromuserid
+		});
+	});
 	socket.on('message',function(msg_text){
 		console.log('IN MESSAGE')
 		console.log(msg_text)

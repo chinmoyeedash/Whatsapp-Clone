@@ -18,9 +18,9 @@ def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
     fromuserid = json['fromuserid']
-    if fromuserid not in mobile:
-        mobile.append(fromuserid)
-        clients.append(request.sid)
+    #if fromuserid not in mobile:
+    mobile.append(fromuserid)
+    clients.append(request.sid)
     print(mobile)
     print(clients)
 #     sockets.append(socketio)
@@ -29,9 +29,11 @@ def handleconnect(json):
 #   print('from mobile' + str(fromMobile))
 #   sockets.append(socketio)
 
-@socketio.on('disconnect')
+@socketio.on('myDisonnect')
 def handledisconnect(json):
     print('in MYCONNECT')
+    mobile.remove(json['fromuserid'])
+    clients.remove(request.sid)
 
 @socketio.on('myMessage')
 def handlemessage(json):
