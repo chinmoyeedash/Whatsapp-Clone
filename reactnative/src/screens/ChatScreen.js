@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import {
   Keyboard, TextInput, StyleSheet, AsyncStorage
 } from 'react-native';
-import { Container, Header, Content, Item, Input, Left, Right, Button, Body, Thumbnail, Title, View, Icon } from 'native-base';
+import { Container, Header, Content, Item, Text, Left, Right, Button, Body, Thumbnail, Title, View, Icon } from 'native-base';
 import SocketIOClient from 'socket.io-client';
 import MessageBubble from '../components/MessageBubble';
-import { getAllMessages } from '../chatsappapi';
+import { getAllMessages, updateRecdTime } from '../chatsappapi';
 
 
 const { EmojiOverlay } = require('react-native-emoji-picker');
 
 let user;
-const image = require('../images/kingfisher.jpg');
+
 
 export default class ChatScreen extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ export default class ChatScreen extends Component {
     this.state = {
       user,
       user_id: this.props.navigation.state.params.user_id,
-      friend_id: this.props.navigation.state.params.friend_id,
+      friend: this.props.navigation.state.params.friend,
       showPicker: false,
       messages: [],
       value: '',
@@ -64,9 +64,6 @@ export default class ChatScreen extends Component {
 
     this.joinUser = this.joinUser.bind(this);
     this.onReceivedMessage = this.onReceivedMessage.bind(this);
-
-    
-    console.log(this.props.navigation.state.params.user_id, this.props.navigation.state.params.friend_id);
     this.sendMessage.bind(this);
   }
 
@@ -84,7 +81,11 @@ export default class ChatScreen extends Component {
 
   onReceivedPrevMessages = async () => {
     const prevMessages = [];
-    const response = await getAllMessages(this.state.user_id, this.state.friend_id);
+
+    console.log('friendid');
+    const friendid = this.state.friend.user_id;
+    console.log(friendid);
+    const response = await getAllMessages(this.state.user_id, this.state.friend.user_id);
     //skipping first row 
     for (let i = 1; i < response.result.length; i++) {
       prevMessages.push({
@@ -138,6 +139,8 @@ export default class ChatScreen extends Component {
           fromuserid: userid
         });
       });
+
+      updateRecdTime(this.state.user_id, this.state.friend.user_id);
   }
 
   updateSize = (height) => {
@@ -149,14 +152,14 @@ export default class ChatScreen extends Component {
  
   sendMessage(msgValue) {
     console.log(this.state.value);
-    console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', this.state.friend_id);
+    console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', this.state.friend.user_id);
     const now = new Date();
     console.log(now);
     const msg = {
 			msg_text: msgValue,
       sent_time: now,
       sender_id: this.state.user_id,
-      receiver_id: this.state.friend_id,
+      receiver_id: this.state.friend.user_id,
     };
     this.socket.emit('myMessage', msg);
     
@@ -193,36 +196,34 @@ handlePick(emoji) {
 render() {
     const { messages, user_id, value, height } = this.state;
     const { navigate } = this.props.navigation;
-    // const newStyle = {
+    let lastseentime = this.state.friend.lastseen;
+    console.log(lastseentime);
+    if (lastseentime !== null) {      
+      lastseentime = `lastseen ${new Date(this.state.friend.lastseen).toLocaleDateString("ja-JP")} at ${new Date(this.state.friend.lastseen).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3')}`;
+      console.log(lastseentime);
+    }
+      // const newStyle = {
     //   flex: 1,s
     //   height
     // };
     
     return (
-      <Container style={{ backgroundColor: '#fbebb0' }}>
-       
+
+      <Container style={{ backgroundColor: '#fbebb0' }}>  
         <Header style={{ backgroundColor: '#045e54' }}>
         <Left>   
         <Button
           transparent
-          onPress={() => navigate('ImageScreen', { dp: image })}
+          onPress={() => navigate('ImageScreen', { dp: this.state.friend.displaypic })}
         >         
-          <Thumbnail source={image} small />
+          <Thumbnail source={{ uri: this.state.friend.displaypic }} small />
         </Button>
         </Left>
             <Body>
-            {/* <Button
-              transparent
-              onPress={() => navigate('Contact')} 
-            >    */}
-            <Title onPress={() => navigate('Contact', { friend_id: this.state.friend_id })}>Chinmoyee </Title>
+            <Title onPress={() => navigate('Contact', { friend: this.state.friend })}>{ this.state.friend.displayname }</Title>
+            <Text note>{ lastseentime }</Text>
             {/* </Button> */}
-          </Body>
-          {/* <Right>
-            <Button transparent onPress={() => navigate('Login')}>
-              <Icon name='more' />
-            </Button>
-          </Right> */}
+          </Body>          
           </Header>
         <Content >
          {/* <ScrollView ref={(ref) => { this.scrollView = ref }} style={styles.messages}>
@@ -261,17 +262,7 @@ render() {
         onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
         onSubmitEditing={Keyboard.dismiss}
          />
-         {/* <Item rounded>
-            <Input 
-            placeholder='Type a message'
-            onChangeText={(value) => this.setState({ value })}
-            multiline
-            style={{ backgroundColor: 'white', fontSize: 16, height, flex: 1 }}
-            value={value}
-           onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
-            />
-          </Item> */}
-          <Button transparent onPress={this.sendMessage.bind(this, value)}>
+        <Button transparent onPress={this.sendMessage.bind(this, value)}>
            <Icon name='send' active style={{ color: '#045e54' }} />
         </Button>
           
@@ -287,60 +278,11 @@ render() {
             visible={this.state.showPicker}
             onEmojiSelected={this.handlePick.bind(this)}
             onTapOutside={() => this.setState({ showPicker: false })} 
-          />
-         
-          {/* <View style={styles.inputBar}>
-        <TextInput
-        placeholder="Type a message"
-        onChangeText={(value) => this.setState({ value })}
-        style={{ borderRadius: 5, borderWidth: 1, borderColor: 'gray', flex: 1, 
-        fontSize: 16, paddingHorizontal: 10, height }}
-        editable
-        multiline
-        value={value}
-        onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
-        />  </View>
-       */}
-       
+          />     
       </Container>
     );
-  }
-
-  
+  }  
 }
-
-//The bar at the bottom with a textbox and a send button.
-// class InputBar extends Component {
-
-//   //AutogrowInput doesn't change its size when the text is changed from the outside.
-//   //Thus, when text is reset to zero, we'll call it's reset function which will take it back to the original size.
-//   //Another possible solution here would be if InputBar kept the text as state and only reported it when the Send button
-//   //was pressed. Then, resetInputText() could be called when the Send button is pressed. However, this limits the ability
-//   //of the InputBar's text to be set from the outside.
-
-//   componentWillReceiveProps(nextProps) {
-//     if (nextProps.text === '') {
-//       this.autogrowInput.resetInputText();
-//     }
-//   }
-
-//   render() {
-//     return (
-//           <View style={styles.inputBar}>
-//             <AutogrowInput style={styles.textBox}
-//                         ref={(ref) => { this.autogrowInput = ref }} 
-//                         multiline={true}
-//                         defaultHeight={30}
-//                         onChangeText={(text) => this.props.onChangeText(text)}
-//                         onContentSizeChange={this.props.onSizeChange}
-//                         value={this.props.text}/>
-//             <TouchableHighlight style={styles.sendButton} onPress={() => this.props.onSendPressed()}>
-//                 <Text style={{color: 'white'}}>Send</Text>
-//             </TouchableHighlight>
-//           </View> 
-//           );
-//   }
-// }
 
 //TODO: separate these out. This is what happens when you're in a hurry!
 const styles = StyleSheet.create({

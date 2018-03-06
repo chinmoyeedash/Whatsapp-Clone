@@ -3,6 +3,7 @@ from flask import render_template, session, request
 from flask_socketio import SocketIO, send, emit
 import requests
 import json
+import datetime
 
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
@@ -15,6 +16,41 @@ clients = []
 
 # #sockets[0] = socketio
 
+def updateLastSeen( userid ):
+   
+        # This is the url to which the query is made
+    url = "https://data.crawfish92.hasura-app.io/v1/query"
+    now = datetime.datetime.now()
+
+    # This is the json payload for the query
+    requestPayload = {
+        "type": "update",
+        "args": {
+            "table": "users",
+            "where": {
+                "user_id": {
+                    "$eq": userid
+                }
+            },
+            "$set": {
+                "lastseen": str(now)
+            }
+        }
+    }
+
+    # Setting headers
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    # Make the query and store response in resp
+    resp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
+
+    # resp.content contains the json response.
+    print resp.content
+    return
+
+
 @socketio.on('myConnect')
 def handleconnect(json):
     print('in MYCONNECT')
@@ -25,6 +61,7 @@ def handleconnect(json):
     clients.append(request.sid)
     print(mobile)
     print(clients)
+    updateLastSeen(fromuserid)
 #     sockets.append(socketio)
 #     print(sockets)
 #   print('Message is ' + msg)
@@ -34,6 +71,7 @@ def handleconnect(json):
 @socketio.on('myDisonnect')
 def handledisconnect(json):
     print('in MYDISCONNECT')
+    updateLastSeen(json['fromuserid'])
     mobile.remove(json['fromuserid'])
     clients.remove(request.sid)
 

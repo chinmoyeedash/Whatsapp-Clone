@@ -2,24 +2,11 @@ import React, { Component } from 'react';
 import { Header, Container, Content,  Left, Icon, Right, View, Body, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
 import { getUserFromId } from '../chatsappapi';
 
-const image1 = require('../images/kingfisher.jpg');
 
 export default class ContactInfoScreen extends Component {
 
     state = {
-        contact: '',
-    }
-
-    componentWillMount() {
-        this.getContactInfo();
-    }
-
-    getContactInfo = async () => {
-        console.log('getting contact');
-        const contact = await getUserFromId(user_id);
-        console.log(contact[0]);
-        console.log(JSON.stringify(contact[0]))
-        this.setState({contact: JSON.stringify(contact[0])});
+        contact: this.props.navigation.state.params.friend
     }
    
     render() {
@@ -48,7 +35,7 @@ export default class ContactInfoScreen extends Component {
             style={{ height: 150, width: 150 }}
             onPress={() => this.props.navigation.navigate('ImageScreen', { dp: contact.displaypic })}
             >      
-                <Thumbnail style={{ height: 150, width: 150 }} large source={contact.displaypic} />
+                <Thumbnail style={{ height: 150, width: 150 }} large source={{ uri: contact.displaypic }} />
             </Button>    
             </Body>
             
@@ -67,10 +54,7 @@ export default class ContactInfoScreen extends Component {
                     <Text>{contact.mobilenumber}</Text>  
                 </Item>
             </Form>
-            <View style={{ height: 10 }} />
-                {/* <Button block rounded style={{ backgroundColor: 'darkorange' }} onPress={this.handleUpdatePressed} >
-                <Text> Call</Text>
-                </Button> */}        
+            <View style={{ height: 10 }} />       
             </Content>
         </Container>
         );

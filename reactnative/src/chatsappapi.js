@@ -13,6 +13,9 @@ const networkErrorObj = {
   status: 503
 }
 
+const defaultimg = 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d';
+
+
 export async function trySignupAndInsert(phone,otp) {
 //   console.log('Making signup query');
 // const signUpUrl='https://app.course77.hasura-app.io/signupotp?mobile='+ phone + '&country_code=91&otp=' + otp;
@@ -75,7 +78,7 @@ export async function trySignupAndInsert(phone,otp) {
                       {
                           "mobilenumber": phone,
                           "displayname": "Test3",
-                          "displaypic": null,
+                          "displaypic": 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d',
                           "status": "Hellloo!!",
                           "lastseen": null,
                           "deviceimei": "123123",
@@ -120,7 +123,7 @@ export async function insertUser(phone,userid) {
                 {
                     "mobilenumber": phone,
                     "displayname": "dfdd", 
-                    "displaypic": null,
+                    "displaypic": 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d',
                     "status": "Hellloo!!",
                     "lastseen": null,
                     "deviceimei": "123123",
@@ -220,6 +223,65 @@ export async function updateUser(mobilenumber, displayname, displaypic, status) 
         console.log("Request Failed: " + e);
         return networkErrorObj;
       }
+}
+
+export async function uploadPicture(dp) {
+
+    var fileurl = "https://filestore.crawfish92.hasura-app.io/v1/file";
+    // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+    // var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+    // And use it in your headers
+    // headers = { "Authorization" : "Bearer " + authToken }
+    var requestOptions = {
+        method: 'POST',
+        headers: {
+        "Authorization": bearerToken
+        },
+        body: dp
+    }
+
+    fetchAction(fileurl, requestOptions)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(result) {
+        console.log(result);
+    })
+    .catch(function(error) {
+        console.log('Request Failed:' + error);
+    });
+}
+
+export async function updateRecdTime(user_id, friend_id) {
+    var requestOptions = {
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 6367e4fc89e80a142071170876248bf65157081698930b18"
+        }
+    };
+ 
+    var now = new Date();
+    
+    var body = {
+        "type": "run_sql",
+        "args": {
+            "sql": "UPDATE messages SET recd_time = '" + now + "' WHERE ((sender_id = " + friend_id + " AND receiver_id = " + user_id + ") AND recd_time = 'NULL') ;"
+        }
+    };
+    
+    requestOptions.body = JSON.stringify(body);
+    
+    fetch(dataUrl, requestOptions)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(result) {
+        console.log(result);
+    })
+    .catch(function(error) {
+        console.log('Request Failed:' + error);
+    });
 }
 
 export async function getContacts(user_id) {
@@ -329,16 +391,45 @@ export async function getUserFromId(user_id) {
     }; 
     requestOptions.body = JSON.stringify(body); 
     try {
-      let resp = await fetch(dataUrl, requestOptions);
-      console.log(resp);
-      return resp.json(); 
-    }
-    catch(e) {
-      console.log("Request Failed: " + e);
-      return networkErrorObj;
-    }
+        let resp = await fetch(dataUrl, requestOptions);
+        console.log(resp);
+        return resp.json(); 
+      }
+      catch(e) {
+        console.log("Request Failed: " + e);
+        return networkErrorObj;
+      }
 };
   
+export async function getUnreadMessages() {
+    var requestOptions = {
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 6367e4fc89e80a142071170876248bf65157081698930b18"
+        }
+    };
+    
+    var body = {
+        "type": "run_sql",
+        "args": {
+            "sql": "SELECT sender_id, count(recd_time) as unread FROM messages where recd_time = 'NULL' GROUP BY sender_id,recd_time "
+        }
+    };
+    
+    requestOptions.body = JSON.stringify(body);
+    
+    try {
+        let resp = await fetch(dataUrl, requestOptions);
+        console.log(resp);
+        return resp.json(); 
+      }
+      catch(e) {
+        console.log("Request Failed: " + e);
+        return networkErrorObj;
+      }
+}
+
 export async function getLastMessages(user_id) {
     console.log('Making data query (get user)');
   
