@@ -7,16 +7,12 @@ let direction = 'right';
 export default class MessageBubble extends Component {
     render() {
       const { msg_text, sent_time, sender_id } = this.props.message;
-      console.log(this.props.user_id);
-      console.log(sender_id);
-      console.log(msg_text);
-
       if (this.props.user_id === sender_id) {
         direction = 'right';
       } else {
         direction = 'left';
       }
-      console.log(direction);
+      
       //These spacers make the message bubble stay to the left or the right, depending on who is speaking, even if the message is multiple lines.
       const leftSpacer = direction === 'left' ? null : <View style={{ width: 70 }} />;
       const rightSpacer = direction === 'left' ? 
@@ -38,12 +34,7 @@ export default class MessageBubble extends Component {
                   {msg_text}
                   <Text note style={{ justifyContent: 'flex-end', color: 'green' }}>{'\n'}{postDate} </Text>
                 </Text> 
-                {/* <View style={{ justifyContent: 'flex-end' }}>
-                <Text style={{ fontSize: 10 }}>  
-                 {'\n'} {this.props.time} 
-                  </Text>     
-                  </View> */}
-              </View>
+                </View>
                 {rightSpacer}
             </View>
         );

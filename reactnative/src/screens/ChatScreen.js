@@ -121,7 +121,7 @@ export default class ChatScreen extends Component {
       this.socket.on('connect', () => {
         console.log('in CONNECT');
     //		socket.send('User has connected');
-        const userid = '1';
+        const userid = this.state.user_id;
      //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myConnect', {
           msg: 'User has connected',
@@ -130,9 +130,9 @@ export default class ChatScreen extends Component {
       });
 
       this.socket.on('disconnect', () => {
-        console.log('in DICONNECT');
+        console.log('in DISCONNECT');
     //		socket.send('User has connected');
-        const userid = '1';
+        const userid = this.state.user_id;
      //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myDisconnect', {
           msg: 'User has disconnected',

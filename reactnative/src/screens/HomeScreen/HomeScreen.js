@@ -35,11 +35,6 @@ export default class HomeScreen extends Component {
     this.onReceivedUserMessages();
   }
 
- // Event listeners
-  /**
-   * When the server sends a message to this.
-   */
-  //onReceivedUserMessages(userMessages) {
     onReceivedUserMessages = async () => {
       const messages = [];
     const user_id = await AsyncStorage.getItem('user_id');

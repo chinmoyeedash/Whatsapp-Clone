@@ -447,7 +447,7 @@ export async function getLastMessages(user_id) {
         }
     };
 
-    const sqlquery = "SELECT DISTINCT ON (friend_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time  FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time,recd_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY friend_id, sent_time DESC;"
+    const sqlquery = "SELECT DISTINCT ON (friend_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time  FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time,recd_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY friend_id, msg_id DESC;"
     //"SELECT DISTINCT ON (friend_id) * FROM (SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time FROM messages WHERE sender_id = 1 UNION ALL SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time, recd_time FROM messages WHERE  receiver_id = 1) sub ORDER BY friend_id, sent_time DESC;"
     var body = {
         "type": "run_sql",

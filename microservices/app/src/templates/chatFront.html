@@ -12,6 +12,7 @@ $(document).ready(function(){
 	console.log('in fun');
 	
 	var socket = io.connect('https://app.crawfish92.hasura-app.io/');
+	socket.connect();
 	var fromuserid;
 	console.log('after var socket',socket);
 	
@@ -38,23 +39,7 @@ socket.on('disconnect', function(){
 		$('#messages').append('<li>'+msg_text+'</li>');
 		console.log('Received message');
 	});
-
-	// $('#sendbutton').on('click',function(){
-	// 	console.log('in Send Button');
-	// 	var tp_msg = $('#myMessage').val();
-	// 	var tp_from_number = $('#fromNumber').val();
-	// 	var tp_to_number = $('#toNumber').val();
-	// 	console.log('MS=',tp_msg,'from :' ,tp_from_number,'to:', tp_to_number);
-	// 	socket.emit('myMessage',{
-	// 		msg : tp_msg,
-	// 		fromMobile : tp_from_number,
-	// 		toMobile : tp_to_number
-	// });
-	// console.log('emitted my message');
-	// return false;
-	// })
-
-	 $('form#emit').submit(function(event) {
+	$('form#emit').submit(function(event) {
 		console.log('in Send form');
 		var tp_msg = $('#mymessage').val();
 		var tp_from_number = $('#fromuserid').val();
@@ -69,38 +54,13 @@ socket.on('disconnect', function(){
 			});
                 return false;
 	});
-	
-
 })
+
 </script>
 <ul id="messages"></ul>
-<!-- <form id="emit" method="POST" action='#'>
-	<input type="text" id="myMessage">
-	<input type="text" id="fromNumber">
-	<input type="text" id="toNumber">
-	<!-- <button id="sendbutton">Send</button> 
-	<input type="submit" value="Send">
-</form> -->
 <form id="emit" name="htmlform" method="post" action="#">
 	<table width="450px">
 	</tr>
-	<!-- <tr>
-	 <td valign="top">
-	  <label for="first_name">First Name *</label>
-	 </td>
-	 <td valign="top">
-	  <input  type="text" name="first_name" maxlength="50" size="30">
-	 </td>
-	</tr>
-	
-	<tr>
-	 <td valign="top"">
-	  <label for="last_name">Last Name *</label>
-	 </td>
-	 <td valign="top">
-	  <input  type="text" name="last_name" maxlength="50" size="30">
-	 </td>
-	</tr> -->
 	<tr>
 	 <td valign="top">
 	  <label for="From UserID">From UserID</label>

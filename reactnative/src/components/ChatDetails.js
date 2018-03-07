@@ -26,8 +26,11 @@ render() {
               <Text note style={{ color: 'green' }}>{ postDate }</Text>
               { 
                 unreadcount !== 0 ?
-                <Badge success> <Text>{ unreadcount }</Text></Badge> :
-                <View />
+                <Badge success> 
+                <Text>{ unreadcount }</Text>
+                </Badge>
+                :
+                <Text />
               }
               </Right>
             </ListItem>
