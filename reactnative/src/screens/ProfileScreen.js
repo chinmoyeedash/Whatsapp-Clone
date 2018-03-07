@@ -21,11 +21,6 @@ export default class ProfileScreen extends Component {
           };  
 
         this.setUserInfo = this.setUserInfo.bind(this);
-        // const { mobilenumber, displayname, status } = JSON.parse(this.props.navigation.state.params.user);
-        // let { displaypic } = JSON.parse(this.props.navigation.state.params.user);
-         
-        
-          console.log(this.state.displayname);
     }
 
     componentWillMount() {

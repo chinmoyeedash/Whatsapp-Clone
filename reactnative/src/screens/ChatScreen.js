@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Keyboard, TextInput, StyleSheet, AsyncStorage
 } from 'react-native';
-import { Container, Header, Content, Item, Text, Left, Right, Button, Body, Thumbnail, Title, View, Icon } from 'native-base';
+import { Container, Header, Content, Text, Left, Button, Body, Thumbnail, Title, View, Icon } from 'native-base';
 import SocketIOClient from 'socket.io-client';
 import MessageBubble from '../components/MessageBubble';
 import { getAllMessages, updateRecdTime } from '../chatsappapi';
@@ -17,35 +17,7 @@ export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
     this.onReceivedPrevMessages = this.onReceivedPrevMessages.bind(this);
-//     const messages = [
-//     {
-//         recd_time: 'February 14, 2018 23:16:30 GMT+11:00',
-//         user_mobilenumber: 9283498234,
-//         msg_text: 'hello',
-//         msg_id: 1,
-//         receiver_id: 2,
-//         sent_time: 'February 14, 2018 23:16:30 GMT+11:00',
-//         sender_id: 1
-//     },
-//     {
-//         recd_time: 'February 14, 2018 23:20:30 GMT+11:00',
-//         user_mobilenumber: 9283498234,
-//         msg_text: 'how r u',
-//         msg_id: 2,
-//         receiver_id: 2,
-//         sent_time: 'February 14, 2018 23:20:30 GMT+11:00',
-//         sender_id: 1
-//     },
-//     {
-//         recd_time: 'February 14, 2018 23:25:40 GMT+11:00',
-//         user_mobilenumber: 9888888888,
-//         msg_text: 'I am fine.. busy!!',
-//         msg_id: 3,
-//         receiver_id: 1,
-//         sent_time: 'February 14, 2018 23:25:30 GMT+11:00',
-//         sender_id: 2
-//     }
-// ];
+
     this.state = {
       user,
       user_id: this.props.navigation.state.params.user_id,
@@ -121,9 +93,7 @@ export default class ChatScreen extends Component {
       
       this.socket.on('connect', () => {
         console.log('in CONNECT');
-    //		socket.send('User has connected');
         const userid = this.state.user_id;
-     //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myConnect', {
           msg: 'User has connected',
           fromuserid: userid
@@ -132,9 +102,7 @@ export default class ChatScreen extends Component {
 
       this.socket.on('disconnect', () => {
         console.log('in DISCONNECT');
-    //		socket.send('User has connected');
         const userid = this.state.user_id;
-     //   let tp_from_mobile = decodeURIComponent(window.location.search.match(/(\?|&)mobile\=([^&]*)/)[2]);
         this.socket.emit('myDisconnect', {
           msg: 'User has disconnected',
           fromuserid: userid
@@ -153,10 +121,9 @@ export default class ChatScreen extends Component {
  
   sendMessage(msgValue) {
     console.log(this.state.value);
-    const friendid = '3';
+    const friendid = this.state.friend.user_id.toString();
     console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', friendid);
     const now = new Date();
-    console.log(now);
     const msg = {
 			msg_text: msgValue,
       sent_time: now,
@@ -167,16 +134,7 @@ export default class ChatScreen extends Component {
     
 		console.log('emitted my message');
      this.state.messages.push(msg);
-  //     recd_time: null,
-  //     user_mobilenumber: this.state.user.mobilenumber,
-  //     msg_text: msgValue,
-  //     // need not pass msgid for db
-  //     msg_id: 4,
-  //     receiver_id: this.state.friend_id,
-  //     sent_time: new Date(),
-  //     sender_id: this.state.user_id
-  // });
-
+ 
     this.setState({
       messages: this.state.messages,
       value: ''
@@ -204,11 +162,7 @@ render() {
       lastseentime = `lastseen ${new Date(this.state.friend.lastseen).toLocaleDateString("ja-JP")} at ${new Date(this.state.friend.lastseen).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3')}`;
       console.log(lastseentime);
     }
-      // const newStyle = {
-    //   flex: 1,s
-    //   height
-    // };
-    
+     
     return (
 
       <Container style={{ backgroundColor: '#fbebb0' }}>  
@@ -228,19 +182,13 @@ render() {
           </Body>          
           </Header>
         <Content >
-         {/* <ScrollView ref={(ref) => { this.scrollView = ref }} style={styles.messages}>
-                    {messages}
-         </ScrollView> */}
-         
+          
          <View style={{ flex: 1 }}>      
-         {/* {this.showMessageBubble()}      */}
          {
            messages.map((message) => 
           <MessageBubble key={message.msg_text} user_id={user_id} message={message} />
          )}
-         {/* <MessageBubble key={0} direction='left' text='hello' time='sds' />
-         <MessageBubble key={1} direction='left' text='hw r u?' time='sssdf' />
-         <MessageBubble key={2} direction='right' text='i am fine ' time='sfsdf' /> */}
+        
          </View>
          </Content> 
          <View style={styles.inputBar}>
@@ -286,7 +234,6 @@ render() {
   }  
 }
 
-//TODO: separate these out. This is what happens when you're in a hurry!
 const styles = StyleSheet.create({
 
   //ChatView

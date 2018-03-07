@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Container, Content,  Left, Icon, Right, View, Body, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
-import { getUserFromId } from '../chatsappapi';
-
+import { Header, Container, Content, Icon, Right, View, Body, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
 
 export default class ContactInfoScreen extends Component {
 

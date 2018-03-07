@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListItem, Thumbnail, Text, Body, Left, Right, Badge, View } from 'native-base';
+import { ListItem, Thumbnail, Text, Body, Left, Right, Badge } from 'native-base';
 
 
 //The bubbles that appear on the left or the right for the messages.

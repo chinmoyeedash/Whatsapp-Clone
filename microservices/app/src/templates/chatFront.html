@@ -25,7 +25,7 @@ $(document).ready(function(){
 		});
 	});
 //		socket.send('User has connected!',$('#fromNumber').val());
-socket.on('disconnect', function(){
+	socket.on('disconnect', function(){
 		console.log('in DISCONNECT');
 		fromuserid = decodeURIComponent(window.location.search.match(/(\?|&)userid\=([^&]*)/)[2]);
 		socket.emit('myDisonnect',{

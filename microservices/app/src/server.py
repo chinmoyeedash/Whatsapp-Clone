@@ -10,10 +10,6 @@ socketio = SocketIO(app)
 
 print("STARTING NOW")
 
-sockets = []
-mobile = []
-clients = []
-
 clientdic = {}
 
 # #sockets[0] = socketio
@@ -59,29 +55,18 @@ def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
     fromuserid = json['fromuserid']
-    #if fromuserid not in mobile:
-    #mobile.append(fromuserid)
-    #clients.append(request.sid)
     if fromuserid in clientdic:
         del clientdic[fromuserid]
     clientdic[fromuserid]= request.sid 
     print(clientdic)
-    print(mobile)
-    print(clients)
     updateLastSeen(fromuserid)
-#   sockets.append(socketio)
-#   print(sockets)
-#   print('Message is ' + msg)
-#   print('from mobile' + str(fromMobile))
-#   sockets.append(socketio)
+
 
 @socketio.on('myDisonnect')
 def handledisconnect(json):
     print('in MYDISCONNECT')
     fromuserid = json['fromuserid']
     updateLastSeen(fromuserid)
-    #mobile.remove(fromuserid)
-    #clients.remove(request.sid)
     print('deleting user',fromuserid)
     if fromuserid in clientdic:
         del clientdic[fromuserid]
@@ -92,11 +77,7 @@ def handlemessage(jsondata):
     print('the message',jsondata['msg_text'])
     receiverid = jsondata['receiver_id']
     print(receiverid)
-    #tp_index = mobile.index(receiverid)
-    #print('mobile=',mobile)
-    #print('tp_index=',tp_index)
-    #print('clients=',clients)
-#    emit('message',json['msg'])
+ 
     jsonresp =  {
         "sent_time": jsondata['sent_time'],
         "msg_text": jsondata['msg_text'],
@@ -105,15 +86,12 @@ def handlemessage(jsondata):
         "sender_id": jsondata['sender_id'],
         "recd_time": "NULL"
     }
-    #emit('message',jsonresp,room=clients[tp_index])
     emit('message',jsonresp,room=clientdic.get(receiverid))
     print('Message is ' + jsondata['msg_text'])
     print('sent time ' + jsondata['sent_time'])
     print('sender_id' + jsondata['sender_id'])
     print('receiver_id' + jsondata['receiver_id'])
-#   socketio.to(sockets[tp_index]).emit('message',json['msg'])
-    #emit('message',json['msg'])
-#   socketio.emit()
+
 #   send(msg,broadcast=True)
     url = "https://data.crawfish92.hasura-app.io/v1/query"
     # This is the json payload for the query
@@ -143,10 +121,6 @@ def handlemessage(jsondata):
     # resp.content contains the json response.
     print(resp.content)
 
-@socketio.on('message')
-def handlemessage2(msg):
-    print('in message handler '+msg)
-	
 #if __name__ == '__main__':
     # socketio.run(app)
     #socketio.run(app, host='https://app.crawfish92.hasura-app.io')
