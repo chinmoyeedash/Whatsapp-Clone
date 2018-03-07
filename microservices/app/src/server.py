@@ -40,8 +40,8 @@ def updateLastSeen( userid ):
 
     # Setting headers
     headers = {
-        "Content-Type": "application/json"
-        "Authorization": "Bearer 6367e4fc89e80a142071170876248bf65157081698930b18"
+    "Content-Type": "application/json",
+    "Authorization": "Bearer 6367e4fc89e80a142071170876248bf65157081698930b18"
     }
 
     # Make the query and store response in resp
