@@ -9,7 +9,7 @@ export default class App extends Component {
     try {
       console.log('setting-crawfish');
       //await AsyncStorage.setItem('HASURA_AUTH_TOKEN', 'I like to save it.');
-      const userid = '2';
+      const userid = '1';
       await AsyncStorage.setItem('user_id', userid);
     } catch (error) {
       // Error saving data

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListItem, Thumbnail, Text, Body, Left, Right, Badge, Icon } from 'native-base';
+import { ListItem, Thumbnail, Text, Body, Left, Right, Badge, View } from 'native-base';
 
 
 //The bubbles that appear on the left or the right for the messages.
@@ -24,9 +24,11 @@ render() {
               </Body>
               <Right >
               <Text note style={{ color: 'green' }}>{ postDate }</Text>
-              <Badge success>
-                <Text>{ unreadcount }</Text>
-              </Badge>
+              { 
+                unreadcount !== 0 ?
+                <Badge success> <Text>{ unreadcount }</Text></Badge> :
+                <View />
+              }
               </Right>
             </ListItem>
      ); 

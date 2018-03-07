@@ -41,6 +41,7 @@ def updateLastSeen( userid ):
     # Setting headers
     headers = {
         "Content-Type": "application/json"
+        "Authorization": "Bearer 6367e4fc89e80a142071170876248bf65157081698930b18"
     }
 
     # Make the query and store response in resp
@@ -56,6 +57,7 @@ def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
     fromuserid = json['fromuserid']
+    print fromuserid
     #if fromuserid not in mobile:
     mobile.append(fromuserid)
     clients.append(request.sid)
@@ -71,15 +73,18 @@ def handleconnect(json):
 @socketio.on('myDisonnect')
 def handledisconnect(json):
     print('in MYDISCONNECT')
-    updateLastSeen(json['fromuserid'])
-    mobile.remove(json['fromuserid'])
+    fromuserid = json['fromuserid']
+    updateLastSeen(fromuserid)
+    mobile.remove(fromuserid)
     clients.remove(request.sid)
 
 @socketio.on('myMessage')
 def handlemessage(jsondata):
     print('in MYMESSAGE',str(jsondata))
     print('the message',jsondata['msg_text'])
-    tp_index = mobile.index(jsondata['receiver_id'])
+    receiverid = jsondata['receiver_id']
+    print receiverid
+    tp_index = mobile.index(receiverid)
     print('tp_index=',tp_index)
 #    emit('message',json['msg'])
     jsonresp =  {
