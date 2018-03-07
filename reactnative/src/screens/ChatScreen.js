@@ -106,6 +106,7 @@ export default class ChatScreen extends Component {
     const oldMessages = this.state.messages;
   // React will automatically rerender the component when a new message is added.
    this.setState({ messages: oldMessages.concat(msg) });
+   updateRecdTime(this.state.user_id, this.state.friend.user_id);
   }
 
   joinUser() {
@@ -152,14 +153,15 @@ export default class ChatScreen extends Component {
  
   sendMessage(msgValue) {
     console.log(this.state.value);
-    console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', this.state.friend.user_id);
+    const friendid = '3';
+    console.log('MS=', msgValue, 'from :', this.state.user_id, 'to:', friendid);
     const now = new Date();
     console.log(now);
     const msg = {
 			msg_text: msgValue,
       sent_time: now,
       sender_id: this.state.user_id,
-      receiver_id: this.state.friend.user_id,
+      receiver_id: friendid,
     };
     this.socket.emit('myMessage', msg);
     

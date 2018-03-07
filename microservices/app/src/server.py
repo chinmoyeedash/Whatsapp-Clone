@@ -14,6 +14,8 @@ sockets = []
 mobile = []
 clients = []
 
+clientdic = {}
+
 # #sockets[0] = socketio
 
 def updateLastSeen( userid ):
@@ -57,15 +59,18 @@ def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
     fromuserid = json['fromuserid']
-    print(fromuserid)
     #if fromuserid not in mobile:
-    mobile.append(fromuserid)
-    clients.append(request.sid)
+    #mobile.append(fromuserid)
+    #clients.append(request.sid)
+    if fromuserid in clientdic:
+        del clientdic[fromuserid]
+    clientdic[fromuserid]= request.sid 
+    print(clientdic)
     print(mobile)
     print(clients)
     updateLastSeen(fromuserid)
-#     sockets.append(socketio)
-#     print(sockets)
+#   sockets.append(socketio)
+#   print(sockets)
 #   print('Message is ' + msg)
 #   print('from mobile' + str(fromMobile))
 #   sockets.append(socketio)
@@ -75,8 +80,11 @@ def handledisconnect(json):
     print('in MYDISCONNECT')
     fromuserid = json['fromuserid']
     updateLastSeen(fromuserid)
-    mobile.remove(fromuserid)
-    clients.remove(request.sid)
+    #mobile.remove(fromuserid)
+    #clients.remove(request.sid)
+    print('deleting user',fromuserid)
+    if fromuserid in clientdic:
+        del clientdic[fromuserid]
 
 @socketio.on('myMessage')
 def handlemessage(jsondata):
@@ -84,8 +92,10 @@ def handlemessage(jsondata):
     print('the message',jsondata['msg_text'])
     receiverid = jsondata['receiver_id']
     print(receiverid)
-    tp_index = mobile.index(receiverid)
-    print('tp_index=',tp_index)
+    #tp_index = mobile.index(receiverid)
+    #print('mobile=',mobile)
+    #print('tp_index=',tp_index)
+    #print('clients=',clients)
 #    emit('message',json['msg'])
     jsonresp =  {
         "sent_time": jsondata['sent_time'],
@@ -95,7 +105,8 @@ def handlemessage(jsondata):
         "sender_id": jsondata['sender_id'],
         "recd_time": "NULL"
     }
-    emit('message',jsonresp,room=clients[tp_index])
+    #emit('message',jsonresp,room=clients[tp_index])
+    emit('message',jsonresp,room=clientdic.get(receiverid))
     print('Message is ' + jsondata['msg_text'])
     print('sent time ' + jsondata['sent_time'])
     print('sender_id' + jsondata['sender_id'])
@@ -131,11 +142,6 @@ def handlemessage(jsondata):
     resp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
     # resp.content contains the json response.
     print(resp.content)
-
-@socketio.on('disconnect')
-def test_disconnect():
-    print('Client disconnected')
-    clients.remove(request.sid)
 
 @socketio.on('message')
 def handlemessage2(msg):
