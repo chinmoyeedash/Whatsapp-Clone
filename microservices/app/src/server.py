@@ -57,7 +57,7 @@ def handleconnect(json):
     print('in MYCONNECT')
     print(str(json))
     fromuserid = json['fromuserid']
-    print fromuserid
+    print(fromuserid)
     #if fromuserid not in mobile:
     mobile.append(fromuserid)
     clients.append(request.sid)
@@ -83,7 +83,7 @@ def handlemessage(jsondata):
     print('in MYMESSAGE',str(jsondata))
     print('the message',jsondata['msg_text'])
     receiverid = jsondata['receiver_id']
-    print receiverid
+    print(receiverid)
     tp_index = mobile.index(receiverid)
     print('tp_index=',tp_index)
 #    emit('message',json['msg'])
