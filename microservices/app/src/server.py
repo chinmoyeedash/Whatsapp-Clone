@@ -154,10 +154,10 @@ def getLastMessages():
 
     # Make the query and store response in resp
     lastmsgresp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
-
+    lastmsgrespdata = lastmsgresp.json()
     # resp.content contains the json response.
     print(lastmsgresp.content)
-    return jsonify(data=lastmsgresp)
+    return jsonify(data=lastmsgrespdata)
 
 @app.route("/getUnreadMessages")
 def getUnreadMessages():
@@ -183,7 +183,7 @@ def getUnreadMessages():
 
     # Make the query and store response in resp
     unreadresp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
-
+    unreadrespdata = unreadresp.json()
     # resp.content contains the json response.
     print(unreadresp.content)
-    return jsonify(data=unreadresp)
+    return jsonify(data=unreadrespdata)
