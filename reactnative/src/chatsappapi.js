@@ -14,7 +14,7 @@ const networkErrorObj = {
 }
 
 const defaultimg = 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d';
-
+const bearerToken = "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e";
 
 export async function trySignupAndInsert(phone,otp) {
 
@@ -33,12 +33,20 @@ export async function trySignupAndInsert(phone,otp) {
             "otp": otp
         }
     };
-
+    console.log(IMEI, IMEI.getImei());
     requestOptions.body = JSON.stringify(body);
     try {
       await fetch(signupUrl, requestOptions)
       .then(function(response) {
           console.log(response);
+          if (response.status !== 200) {
+            if (response.status === 504) {
+              Alert.alert('Network Error', 'Check your internet connection');
+            } else {
+              Alert.alert('Error', `Signup Unsuccessful, Pl.Try Again!  ${response.status}`);      
+            }
+            throw new Error(response.statusText);
+          } 
           return response.json();
         })
         .then(function(result) {
@@ -65,7 +73,7 @@ export async function trySignupAndInsert(phone,otp) {
                           "status": '',
                           "lastseen": now,
                           "deviceimei": IMEI.getImei(),
-                          "user_id": ressult.hasura_id
+                          "user_id": result.hasura_id
                       }
                   ]
               }
@@ -78,7 +86,15 @@ export async function trySignupAndInsert(phone,otp) {
         .then(function(response) {
             console.log('after insert');
             console.log(response);
-            return response ;
+            if (response.status !== 200) {
+                if (response.status === 504) {
+                  Alert.alert('Network Error', 'Check your internet connection');
+                } else {
+                  Alert.alert('Error', `Signup Unsuccessful, Pl.Try Again!  ${response.status}`);      
+                }
+                throw new Error(response.statusText);
+            }
+            return response; 
         })
       }      
   catch(e) {
@@ -96,7 +112,8 @@ export async function sendOtpUser(phone) {
 var requestOptions = {
     "method": "POST",
     "headers": {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": bearerToken
     }
 };
 
@@ -123,13 +140,13 @@ export async function updateUser(mobilenumber, displayname, displaypic, status) 
     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
     // And use it in your headers
-    bearerToken = "Bearer " + authToken
+    var userToken  = "Bearer " + authToken
     var requestOptions = {
         "method": "POST",
         "headers": {
             "Content-Type": "application/json",
             //for defective95 "Authorization": "Bearer bd69be047e89fb3ac98e788222ee2a56547be1b35ef14fd3"
-            "Authorization": bearerToken
+            "Authorization": userToken
         }
     };
     
@@ -167,11 +184,11 @@ export async function uploadPicture(dp) {
      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
     // And use it in your headers
-    bearerToken = "Bearer " + authToken
+    var userToken  = "Bearer " + authToken
     var requestOptions = {
         method: 'POST',
         headers: {
-        "Authorization": bearerToken
+        "Authorization": userToken
         },
         body: dp
     }
@@ -192,7 +209,7 @@ export async function updateRecdTime(user_id, friend_id) {
      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
      // And use it in your headers
-     bearerToken = "Bearer " + authToken 
+     var userToken  = "Bearer " + authToken 
     var requestOptions = {
         "method": "POST",
         "headers": {
@@ -229,12 +246,12 @@ export async function getContacts(user_id) {
     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
     // And use it in your headers
-    bearerToken = "Bearer " + authToken 
+    var userToken  = "Bearer " + authToken 
     var requestOptions = {
         "method": "POST",
         "headers": {
             "Content-Type": "application/json",
-            "Authorization": bearerToken
+            "Authorization": userToken
         }
     };
     
@@ -254,7 +271,8 @@ export async function getContacts(user_id) {
     };
     
     requestOptions.body = JSON.stringify(body);
-    
+    console.log(requestOptions);
+
     try {
         let resp = await fetch(dataUrl, requestOptions);
         console.log(resp);
@@ -271,13 +289,13 @@ export async function getUser(mobilenumber) {
    // If you have the auth token saved in offline storage, obtain it in async componentDidMount
    var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
    // And use it in your headers
-   bearerToken = "Bearer " + authToken 
+   var userToken = "Bearer " + authToken 
   var requestOptions = {
       "method": "POST",
       "headers": {
         "Content-Type": "application/json",
         //  "Authorization": "Bearer bd69be047e89fb3ac98e788222ee2a56547be1b35ef14fd3"
-        "Authorization": bearerToken
+        "Authorization": userToken
    
     }
   }; 
@@ -312,12 +330,12 @@ export async function getUserFromId(user_id) {
    // If you have the auth token saved in offline storage, obtain it in async componentDidMount
    var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
    // And use it in your headers
-   bearerToken = "Bearer " + authToken
+   var userToken = "Bearer " + authToken
     var requestOptions = {
         "method": "POST",
         "headers": {
           "Content-Type": "application/json",
-          "Authorization": bearerToken
+          "Authorization": userToken
      
       }
     }; 
@@ -347,88 +365,119 @@ export async function getUserFromId(user_id) {
       }
 };
   
-export async function getUnreadMessages() {
-     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
-     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
-    // And use it in your headers
-    bearerToken = "Bearer " + authToken
-    var requestOptions = {
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json",
-            "Authorization": bearerToken
-        }
-    };
+// export async function getUnreadMessages() {
+//     console.log('Making data query (get unread messages)');
+//      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+//      //var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+//     // And use it in your headers
+//     //userToken = "Bearer " + authToken
+//     var requestOptions = {
+//         "method": "POST",
+//         "headers": {
+//             "Content-Type": "application/json",
+//             "Authorization": "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e"
+//         }
+//     };
     
-    var body = {
-        "type": "run_sql",
-        "args": {
-            "sql": "SELECT sender_id, count(recd_time) as unread FROM messages where recd_time = 'NULL' GROUP BY sender_id,recd_time "
-        }
-    };
+//     var body = {
+//         "type": "run_sql",
+//         "args": {
+//             "sql": "SELECT sender_id, count(recd_time) as unread FROM messages where recd_time = 'NULL' GROUP BY sender_id,recd_time "
+//         }
+//     };
     
-    requestOptions.body = JSON.stringify(body);
+//     requestOptions.body = JSON.stringify(body);
     
+//     try {
+//         let resp = await fetch(dataUrl, requestOptions);
+//         console.log(resp);
+//         return resp.json(); 
+//       }
+//       catch(e) {
+//         console.log("Request Failed: " + e);
+//         return networkErrorObj;
+//       }
+// }
+
+// export async function getLastMessages(user_id) {
+//     console.log('Making data query (get last messages)');
+  
+//      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+//      //var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+//     // And use it in your headers
+//     //var userToken = "Bearer " + authToken
+//     console.log(bearerToken);
+//     var requestOptions = {
+//         "method": "POST",
+//         "headers": {
+//             "Content-Type": "application/json",
+//             "Authorization": "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e",
+//             "X-Hasura-Role": "admin"
+//         }
+//     };
+    
+
+//     const sqlquery = "SELECT DISTINCT ON (friend_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time  FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time,recd_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY friend_id, msg_id DESC;"
+//     //"SELECT DISTINCT ON (friend_id) * FROM (SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time FROM messages WHERE sender_id = 1 UNION ALL SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time, recd_time FROM messages WHERE  receiver_id = 1) sub ORDER BY friend_id, sent_time DESC;"
+//     var body = {
+//         "type": "run_sql",
+//         "args": {
+//             "sql": sqlquery
+//         }
+//     };
+    
+//     requestOptions.body = JSON.stringify(body);
+//     console.log(requestOptions);
+//     try {
+//         let resp = await fetch(dataUrl, requestOptions);
+//         console.log(resp);
+//         return resp.json(); 
+//       }
+//       catch(e) {
+//         console.log("Request Failed: " + e);
+//         return networkErrorObj;
+//       }
+// }
+export async function getLastMessages(user_id) {
+    var msgurl = "https://app.crawfish92.hasura-app.io/getLastMessages?user_id="+ user_id;
     try {
-        let resp = await fetch(dataUrl, requestOptions);
-        console.log(resp);
-        return resp.json(); 
-      }
-      catch(e) {
+        let response = await fetch(msgurl);
+        console.log(response);
+       return response.json();
+    }
+    catch(e) {
         console.log("Request Failed: " + e);
         return networkErrorObj;
-      }
+    }
 }
 
-export async function getLastMessages(user_id) {
-    console.log('Making data query (get last messages)');
-  
-     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
-     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
-    // And use it in your headers
-    bearerToken = "Bearer " + authToken
-    var requestOptions = {
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json",
-            "Authorization": bearerToken
-        }
-    };
-
-    const sqlquery = "SELECT DISTINCT ON (friend_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time  FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time,recd_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY friend_id, msg_id DESC;"
-    //"SELECT DISTINCT ON (friend_id) * FROM (SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time FROM messages WHERE sender_id = 1 UNION ALL SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time, recd_time FROM messages WHERE  receiver_id = 1) sub ORDER BY friend_id, sent_time DESC;"
-    var body = {
-        "type": "run_sql",
-        "args": {
-            "sql": sqlquery
-        }
-    };
-
-    requestOptions.body = JSON.stringify(body);
-
+export async function getUnreadMessages() {
+    var unreadmsgurl = "https://app.crawfish92.hasura-app.io/getUnreadMessages";
+    let response = await fetch(unreadmsgurl);
     try {
-        let resp = await fetch(dataUrl, requestOptions);
-        console.log(resp);
-        return resp.json(); 
-      }
-      catch(e) {
+        let response = await fetch(unreadmsgurl);
+        console.log(response);
+       return response.json();
+    }
+    catch(e) {
         console.log("Request Failed: " + e);
         return networkErrorObj;
-      }
+    }
 }
 
 export async function getAllMessages(user_id,friend_id) {
-    console.log('Making data query (get user)');
+    console.log('Making data query (get all messages)');
   
      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
     // And use it in your headers
-    bearerToken = "Bearer " + authToken
+    var userToken = "Bearer " + authToken
     var requestOptions = {
         "method": "POST",
         "headers": {
             "Content-Type": "application/json",
-            "Authorization": bearerToken
+            "Authorization": bearerToken,
+            "X-Hasura-Role": "admin"
         }
     };
 

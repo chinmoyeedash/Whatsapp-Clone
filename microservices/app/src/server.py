@@ -1,5 +1,5 @@
 from src import app
-from flask import render_template, session, request
+from flask import render_template, session, request, jsonify
 from flask_socketio import SocketIO, send, emit
 import requests
 import json
@@ -129,4 +129,61 @@ def handlemessage(jsondata):
 def home():
     return render_template('chatFront.html')
 
-	
+@app.route("/getLastMessages")
+def getLastMessages():
+    # This is the url to which the query is made
+    url = "https://data.crawfish92.hasura-app.io/v1/query"
+    args = request.args
+    user_id = args['user_id']
+    sqlquery = "SELECT DISTINCT ON (friend_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS friend_id, msg_text, sent_time, recd_time  FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS friend_id, msg_text, sent_time,recd_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY friend_id, msg_id DESC;"
+   
+
+    # This is the json payload for the query
+    requestPayload = {
+        "type": "run_sql",
+        "args": {
+            "sql": sqlquery
+        }
+    }
+
+    # Setting headers
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e"
+    }
+
+    # Make the query and store response in resp
+    lastmsgresp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
+
+    # resp.content contains the json response.
+    print(lastmsgresp.content)
+    return jsonify(data=lastmsgresp)
+
+@app.route("/getUnreadMessages")
+def getUnreadMessages():
+    # This is the url to which the query is made
+    url = "https://data.crawfish92.hasura-app.io/v1/query"
+    
+    sqlquery = "SELECT sender_id, count(recd_time) as unread FROM messages where recd_time = 'NULL' GROUP BY sender_id,recd_time;"
+   
+
+    # This is the json payload for the query
+    requestPayload = {
+        "type": "run_sql",
+        "args": {
+            "sql": sqlquery
+        }
+    }
+
+    # Setting headers
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e"
+    }
+
+    # Make the query and store response in resp
+    unreadresp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
+
+    # resp.content contains the json response.
+    print(unreadresp.content)
+    return jsonify(data=unreadresp)

@@ -1,0 +1,18 @@
+- args:
+    role: user
+    table: messages
+  type: drop_select_permission
+- args:
+    permission:
+      columns:
+      - msg_id
+      - msg_text
+      - recd_time
+      - receiver_id
+      - sender_id
+      - sent_time
+      - user_id
+      filter: {}
+    role: user
+    table: messages
+  type: create_select_permission

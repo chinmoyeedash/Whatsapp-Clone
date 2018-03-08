@@ -49,16 +49,8 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
       const { navigate } = this.props.navigation;
       this.setState({ promptShow: false, otp: value });
       const response = await trySignupAndInsert(this.state.phone, value);
-      Alert.alert('Response', response);
-      if (response.status !== 200) {
-        if (response.status === 504) {
-          Alert.alert('Network Error', 'Check your internet connection');
-        } else {
-          Alert.alert('Error', `Signup Unsuccessful, Pl.Try Again!  ${response.status}`);      
-        }
-      } else {         
-        navigate('Home');
-     }
+      console.log('going to home');
+      navigate('Home');
     }
   }
 
@@ -105,7 +97,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
       //   this.setState({ isLoggedIn: true });  
       // }
       //const insertResponse = await insertUser(899924244, 5);
-      const insertResponse = await getUser(939484432);
+      const insertResponse = await getUser(9880175579);
       if (insertResponse.status !== 200) {
         if (insertResponse.status === 504) {
           Alert.alert('Network Error', 'Check your internet connection');
@@ -119,24 +111,20 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
     }
 
     saveData = phone => {
-     console.log(`mob=${phone}`);
-     this.setState({ phone });
-  }
+      this.setState({ phone });
+    }
 
   render() {
     const data = [{
       value: 'India',
     }, {
-      value: 'ABC',
+      value: 'America',
     }, {
-      value: 'DEF',
+      value: 'China',
     }];
 
-    console.log('auth');
-    console.log(this.state.auth);
-   
+    
     return (
-      
         (this.state.auth !== null) 
         ?
         <HomeScreen navigation={this.props.navigation} />
@@ -152,15 +140,14 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
             title="Please enter OTP below to verify your phone number"
             visible={this.state.promptShow}
             onCancel={() => this.setState({ promptShow: false, otp: '' })}
-            onSubmit={(otp) => this.onPressOTPButton(otp)}
-            
+            onSubmit={(otp) => this.onPressOTPButton(otp)}   
         />
        
           <Card>
             <CardItem>
               <Body>
                 <Text>
-                 WhatsApp Messenger will send a one time SMS message to verify your phone number.
+                 ChatsApp Messenger will send a one time SMS message to verify your phone number.
                  Carrier SMS charges may apply.
                 </Text>
               </Body>
@@ -170,9 +157,8 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
             <CardItem>
               <Body>
                 <Text>
-                Please confirm your country code and enter your phone number
-                </Text>
-                
+                 Please confirm your country code and enter your phone number
+                </Text>                
                 </Body>
             </CardItem>   
             <View style={{ flex: 1, margin: 10 }}>
@@ -185,7 +171,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
                   value='India'
                   
                 /> 
-                </View>
+            </View>
             <CardItem>
             {/* passing reference of this as this method will be called at runtime */}
             <Text>+</Text>
@@ -205,15 +191,14 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
             </Button>
             </Item>
             </CardItem>
-            <CardItem>
+            {/* <CardItem>
               <Button bordered dark onPress={this.logInUser.bind(this)}>
                 <Text>Login</Text>
             </Button>
-            </CardItem>
+            </CardItem> */}
           </Card>
         </Content>
       </Container>
     );
+  }
 }
-}
-
