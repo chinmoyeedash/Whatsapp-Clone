@@ -157,7 +157,7 @@ def getLastMessages():
     lastmsgrespdata = lastmsgresp.json()
     # resp.content contains the json response.
     print(lastmsgresp.content)
-    return jsonify(data=lastmsgrespdata)
+    return jsonify(lastmsgrespdata)
 
 @app.route("/getUnreadMessages")
 def getUnreadMessages():
@@ -186,4 +186,4 @@ def getUnreadMessages():
     unreadrespdata = unreadresp.json()
     # resp.content contains the json response.
     print(unreadresp.content)
-    return jsonify(data=unreadrespdata)
+    return jsonify(unreadrespdata)

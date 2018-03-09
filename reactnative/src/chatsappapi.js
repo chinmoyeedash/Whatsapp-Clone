@@ -441,9 +441,9 @@ export async function getUserFromId(user_id) {
 export async function getLastMessages(user_id) {
     var msgurl = "https://app.crawfish92.hasura-app.io/getLastMessages?user_id="+ user_id;
     try {
-        let response = await fetch(msgurl);
-        console.log(response);
-       return response.json();
+        let lastmsgresponse = await fetch(msgurl);
+        console.log('lastmsgresponse', lastmsgresponse);
+       return lastmsgresponse.json();
     }
     catch(e) {
         console.log("Request Failed: " + e);
