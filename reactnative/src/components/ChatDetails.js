@@ -8,6 +8,8 @@ export default class ChatDetails extends Component {
 render() {
     const { navigate } = this.props.navigation;
     const { msg_text, sent_time, user_id, friend, unreadcount } = this.props.userMessages;
+    const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/' + friend.displaypic;
+
     console.log(`inside chatdetials ${friend.displaypic}`);
     
   const postDate = new Date(sent_time).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
@@ -16,7 +18,7 @@ render() {
           
            <ListItem avatar button onPress={() => navigate('ChatScreen', { user_id, friend })}>
               <Left>
-              <Thumbnail source={{ uri: friend.displaypic }} />
+              <Thumbnail source={{ uri: imageurl }} />
               </Left>
               <Body>
                 <Text>{ friend.displayname }</Text>

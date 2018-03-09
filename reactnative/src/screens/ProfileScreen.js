@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Alert, AsyncStorage, Image, PixelRatio } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import { Header, Container, Content, View, Body, Left, Right, Icon, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 
-import { updateUser, getUserFromId } from '../chatsappapi';
+import { updateUser, getUserFromId, uploadPicture } from '../chatsappapi';
 
 
-const defaultimg = 'https://filestore.defective95.hasura-app.io/v1/file/c6afa506-673c-46b0-bf93-50ed2f18163e';
+const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/';
 
 export default class ProfileScreen extends Component {
 
@@ -14,6 +14,7 @@ export default class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            user_id: '',
             displaypic: '',
             mobilenumber: '',
             status: '',
@@ -36,22 +37,30 @@ export default class ProfileScreen extends Component {
           return getUserFromId(res);
         }).then(oldUser => {
           console.log(oldUser);
-          let dp = oldUser[0].displaypic;
-          if (dp == null) {
-               dp = defaultimg;
-          }
-          this.setState({  
+          this.setState({
+              user_id: oldUser[0].user_id,  
             mobilenumber: oldUser[0].mobilenumber, 
             displayname: oldUser[0].displayname,
             status: oldUser[0].status,
-            displaypic: dp,
+            displaypic: oldUser[0].displaypic
             
           });
-          console.log(this.state.displaypic);
+          console.log(imageurl + this.state.displaypic);
           AsyncStorage.setItem('user', JSON.stringify(oldUser[0]));
         })
         .catch(error => console.log(error));
-      }
+    }
+
+    uploadPictureSetState = async (dp) => {
+
+        const uploadResponse = await uploadPicture(dp, this.state.user_id);
+        console.log('uploadResponse', uploadResponse); 
+        this.setState({
+
+            displaypic: uploadResponse.file_id
+
+        });
+    }
 
     selectPhotoTapped() {
         const options = {
@@ -77,19 +86,13 @@ export default class ProfileScreen extends Component {
     
             // You can also display the image using data:
             // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-            console.log('source');
-            console.log(source);
-            this.setState({
-   
-              displaypic: source.uri
-   
-            });
+            console.log('source', source);
+            // this.setState({
+            //     displaypic: source.uri
+            // });
+            this.uploadPictureSetState(source.uri);
           }
         });
-    }
-
-    handleUploadPressed = async () => {
-
     }
 
     handleUpdatePressed = async () => {
@@ -139,6 +142,8 @@ export default class ProfileScreen extends Component {
       }
     
     render() {
+        const image = imageurl + this.state.displaypic;
+        console.log(image);
     return (
         <Container >
         <Header style={{ backgroundColor: '#045e54' }}>
@@ -156,13 +161,13 @@ export default class ProfileScreen extends Component {
             <Body style={{ padding: 20 }}>
             <Button
                 transparent
-                style={{ height: 150, width: 150 }}
-                onPress={() => this.props.navigation.navigate('ImageScreen', { displaypic: this.state.displaypic })}
+                style={{ height: 170, width: 170 }}
+                onPress={() => this.props.navigation.navigate('ImageScreen', { displaypic: image })}
             >      
             <Thumbnail 
-            style={{ height: 150, width: 150 }} 
+            style={{ height: 170, width: 170 }} 
             large 
-            source={{ uri: this.state.displaypic }}    
+            source={{ uri: image }}    
             />
             </Button>
             <Button block rounded style={{ backgroundColor: 'darkorange' }} onPress={this.selectPhotoTapped.bind(this)} >

@@ -42,14 +42,13 @@ export default class HomeScreen extends Component {
     const unreadmessages = await getUnreadMessages();
     //skipping first row 
     console.log('newmessages', newmessages);
-    // console.log('newmessages-result', newmessages.result);
-    // console.log('newmessages-result-length', newmessages.result.length);
-    // for (let i = 1; i < newmessages.result.length; i++) {
-    //   const friend_id = newmessages.result[i][2];
+    console.log('newmessages-result', newmessages.result);
+    console.log('newmessages-result-length', newmessages.result.length);
+    for (let i = 1; i < newmessages.result.length; i++) {
+      const friend_id = newmessages.result[i][2];
        let unreadcount = 0;
       console.log('unreadmessages', unreadmessages);
       for (let j = 1; j < unreadmessages.result.length; j++) {
-        
         if (unreadmessages.result[j][0] === friend_id) {
            unreadcount = unreadmessages.result[j][1];
            console.log(unreadmessages.result[j][0] + unreadcount);
@@ -68,9 +67,11 @@ export default class HomeScreen extends Component {
         recd_time: newmessages.result[i][5],
         unreadcount
       });
-    //}
+    }
     console.log(messages);
-
+    if (messages.length === 0) {
+      Alert.alert('Welcome!', 'No current chats available... chose your friends from Contacts tab');
+    }
     this.setState({ user_id, isLoading: false, userMessages: messages });
  }
 

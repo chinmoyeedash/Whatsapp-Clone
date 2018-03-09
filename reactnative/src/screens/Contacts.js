@@ -41,6 +41,7 @@ export default class Contacts extends Component {
     }
 
 render() {
+    const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/';
     return (
             <FlatList
             data={this.state.contacts}
@@ -48,7 +49,7 @@ render() {
             (
                 <ListItem avatar button onPress={() => this.handlePress(item)}>
                 <Left>
-                   <Thumbnail source={{ uri: item.displaypic }} />
+                   <Thumbnail source={{ uri: imageurl + item.displaypic }} />
                   </Left>
                    <Body>
                     <Text>{ item.displayname }</Text>

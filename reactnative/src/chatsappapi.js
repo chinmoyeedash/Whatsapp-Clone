@@ -6,14 +6,14 @@ const signupUrl = 'https://auth.crawfish92.hasura-app.io/v1/signup';
 
 import { Alert, AsyncStorage } from 'react-native';
 const IMEI = require('react-native-imei');
-// import fetch from 'isomorphic-fetch'
+import fetch from 'isomorphic-fetch'
 // // Fixes isomorphic-fetch
 // GLOBAL.self = GLOBAL;
 const networkErrorObj = {
   status: 503
 }
 
-const defaultimg = 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d';
+const defaultimg = '61316c53-6640-4d9a-a586-3a9c1892716d';
 const bearerToken = "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e";
 
 export async function trySignupAndInsert(phone,otp) {
@@ -179,67 +179,72 @@ export async function updateUser(mobilenumber, displayname, displaypic, status) 
       }
 }
 
-export async function uploadPicture(dp) {
-    var fileurl = "https://filestore.crawfish92.hasura-app.io/v1/file";
-     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
-     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
-    // And use it in your headers
-    var userToken  = "Bearer " + authToken
+export async function uploadPicture(dp,user_id) {
+    // var fetchAction =  require('fetch');
+     var fileurl = "https://filestore.crawfish92.hasura-app.io/v1/file/" + user_id;
+     //const dp1 = "file:///storage/emulated/0/Android/data/com.chatsapp/files/Pictures/image-efe99812-2f01-4b78-9f96-46ffd02186a1.jpg";
+    // console.log('dp', dp1);
+     console.log('dp', dp);
+    //  // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+    // // And use it in your headers
+     var userToken  = "Bearer " + authToken
     var requestOptions = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
+        "Content-Type": "image/png",
         "Authorization": userToken
         },
         body: dp
     }
 
-    fetchAction(fileurl, requestOptions)
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(result) {
-        console.log(result);
-    })
-    .catch(function(error) {
-        console.log('Request Failed:' + error);
-    });
+    try {
+        let resp = await fetchAction(fileurl, requestOptions);
+        console.log(resp);
+        return resp.json(); 
+      }
+      catch(e) {
+        console.log("Request Failed: " + e);
+        return networkErrorObj;
+      }
+    
 }
 
-export async function updateRecdTime(user_id, friend_id) {
-     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
-     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
-     // And use it in your headers
-     var userToken  = "Bearer " + authToken 
-    var requestOptions = {
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json",
-            "Authorization": bearerToken
-        }
-    };
+// export async function updateRecdTime(user_id, friend_id) {
+//      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+//      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+//      // And use it in your headers
+//      var userToken  = "Bearer " + authToken 
+//     var requestOptions = {
+//         "method": "POST",
+//         "headers": {
+//             "Content-Type": "application/json",
+//             "Authorization": bearerToken
+//         }
+//     };
  
-    var now = new Date();
+//     var now = new Date();
     
-    var body = {
-        "type": "run_sql",
-        "args": {
-            "sql": "UPDATE messages SET recd_time = '" + now + "' WHERE ((sender_id = " + friend_id + " AND receiver_id = " + user_id + ") AND recd_time = 'NULL') ;"
-        }
-    };
+//     var body = {
+//         "type": "run_sql",
+//         "args": {
+//             "sql": "UPDATE messages SET recd_time = '" + now + "' WHERE ((sender_id = " + friend_id + " AND receiver_id = " + user_id + ") AND recd_time = 'NULL') ;"
+//         }
+//     };
     
-    requestOptions.body = JSON.stringify(body);
+//     requestOptions.body = JSON.stringify(body);
     
-    fetch(dataUrl, requestOptions)
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(result) {
-        console.log(result);
-    })
-    .catch(function(error) {
-        console.log('Request Failed:' + error);
-    });
-}
+//     fetch(dataUrl, requestOptions)
+//     .then(function(response) {
+//         return response.json();
+//     })
+//     .then(function(result) {
+//         console.log(result);
+//     })
+//     .catch(function(error) {
+//         console.log('Request Failed:' + error);
+//     });
+// }
 
 export async function getContacts(user_id) {
 	console.log('Making data query (get contacts)');
@@ -438,6 +443,20 @@ export async function getUserFromId(user_id) {
 //         return networkErrorObj;
 //       }
 // }
+
+export async function updateRecdTime(user_id, friend_id) {
+    var msgurl = "https://app.crawfish92.hasura-app.io/updateRecdTime?user_id='"+ user_id + "'&friend_id='" + friend_id + "'";
+    try {
+        let lastmsgresponse = await fetch(msgurl);
+        console.log('lastmsgresponse', lastmsgresponse);
+       return lastmsgresponse.json();
+    }
+    catch(e) {
+        console.log("Request Failed: " + e);
+        return networkErrorObj;
+    }
+}
+
 export async function getLastMessages(user_id) {
     var msgurl = "https://app.crawfish92.hasura-app.io/getLastMessages?user_id="+ user_id;
     try {
@@ -465,40 +484,52 @@ export async function getUnreadMessages() {
     }
 }
 
-export async function getAllMessages(user_id,friend_id) {
-    console.log('Making data query (get all messages)');
-  
-     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
-     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
-    // And use it in your headers
-    var userToken = "Bearer " + authToken
-    var requestOptions = {
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json",
-            "Authorization": bearerToken,
-            "X-Hasura-Role": "admin"
-        }
-    };
-
-    //var sqlquery = "SELECT DISTINCT ON (user_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS user_id, msg_text, sent_time   FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS user_id, msg_text, sent_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY user_id, sent_time DESC;"
-
-    var body = {
-        "type": "run_sql",
-        "args": {
-            "sql": "SELECT * FROM   messages WHERE (sender_id = "+friend_id+" AND receiver_id = "+user_id+" OR sender_id = "+user_id+" AND receiver_id = "+friend_id+");"
-        }
-    };
-
-    requestOptions.body = JSON.stringify(body);
-
+export async function getAllMessages(user_id, friend_id) {
+    var msgurl = "https://app.crawfish92.hasura-app.io/getallMessages?user_id='"+ user_id + "'&friend_id='" + friend_id + "'";
     try {
-        let resp = await fetch(dataUrl, requestOptions);
-        console.log(resp);
-        return resp.json(); 
-      }
-      catch(e) {
+        let allmsgresponse = await fetch(msgurl);
+        console.log('allmsgresponse', allmsgresponse);
+       return allmsgresponse.json();
+    }
+    catch(e) {
         console.log("Request Failed: " + e);
         return networkErrorObj;
-      }
+    }
 }
+
+// export async function getAllMessages(user_id,friend_id) {
+//     console.log('Making data query (get all messages)');
+  
+//      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+//      var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+//     // And use it in your headers
+//     var userToken = "Bearer " + authToken
+//     var requestOptions = {
+//         "method": "POST",
+//         "headers": {
+//             "Content-Type": "application/json",
+//             "Authorization": userToken    
+//         }
+//     };
+
+//     //var sqlquery = "SELECT DISTINCT ON (user_id) * FROM (   SELECT 'out' AS type, msg_id, receiver_id AS user_id, msg_text, sent_time   FROM   messages  WHERE  sender_id = "+user_id+" UNION  ALL    SELECT 'in' AS type, msg_id, sender_id AS user_id, msg_text, sent_time FROM   messages WHERE  receiver_id = "+user_id+" ) sub ORDER BY user_id, sent_time DESC;"
+
+//     var body = {
+//         "type": "run_sql",
+//         "args": {
+//             "sql": "SELECT * FROM   messages WHERE (sender_id = "+friend_id+" AND receiver_id = "+user_id+" OR sender_id = "+user_id+" AND receiver_id = "+friend_id+");"
+//         }
+//     };
+
+//     requestOptions.body = JSON.stringify(body);
+
+//     try {
+//         let resp = await fetch(dataUrl, requestOptions);
+//         console.log(resp);
+//         return resp.json(); 
+//       }
+//       catch(e) {
+//         console.log("Request Failed: " + e);
+//         return networkErrorObj;
+//       }
+// }

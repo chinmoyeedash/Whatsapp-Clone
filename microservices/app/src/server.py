@@ -165,7 +165,70 @@ def getUnreadMessages():
     url = "https://data.crawfish92.hasura-app.io/v1/query"
     
     sqlquery = "SELECT sender_id, count(recd_time) as unread FROM messages where recd_time = 'NULL' GROUP BY sender_id,recd_time;"
+
+    # This is the json payload for the query
+    requestPayload = {
+        "type": "run_sql",
+        "args": {
+            "sql": sqlquery
+        }
+    }
+
+    # Setting headers
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e"
+    }
+
+    # Make the query and store response in resp
+    unreadresp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
+    unreadrespdata = unreadresp.json()
+    # resp.content contains the json response.
+    print(unreadresp.content)
+    return jsonify(unreadrespdata)
+
+@app.route("/getAllMessages")
+def getAllMessages():
+    # This is the url to which the query is made
+    url = "https://data.crawfish92.hasura-app.io/v1/query"
+    args = request.args
+    user_id = args['user_id']
+    friend_id = args['friend_id']
+    sqlquery = "SELECT * FROM   messages WHERE (sender_id = "+friend_id+" AND receiver_id = "+user_id+" OR sender_id = "+user_id+" AND receiver_id = "+friend_id+");"
    
+
+    # This is the json payload for the query
+    requestPayload = {
+        "type": "run_sql",
+        "args": {
+            "sql": sqlquery
+        }
+    }
+
+    # Setting headers
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e"
+    }
+
+    # Make the query and store response in resp
+    allmsgresp = requests.request("POST", url, data=json.dumps(requestPayload), headers=headers)
+    allmsgrespdata = allmsgresp.json()
+    # resp.content contains the json response.
+    print(allmsgresp.content)
+    return jsonify(allmsgrespdata)
+
+@app.route("/updateRecdTime")
+def updateRecdTime():
+    # This is the url to which the query is made
+    url = "https://data.crawfish92.hasura-app.io/v1/query"
+    args = request.args
+    friend_id = args['friend_id']
+    user_id = args['user_id']
+    
+    now = datetime.datetime.now()
+    sqlquery = "UPDATE messages SET recd_time = '" + now + "' WHERE ((sender_id = " + friend_id + " AND receiver_id = " + user_id + ") AND recd_time = 'NULL') ;"
+
 
     # This is the json payload for the query
     requestPayload = {

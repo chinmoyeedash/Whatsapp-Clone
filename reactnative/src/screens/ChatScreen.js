@@ -7,7 +7,7 @@ import SocketIOClient from 'socket.io-client';
 import MessageBubble from '../components/MessageBubble';
 import { getAllMessages, updateRecdTime } from '../chatsappapi';
 
-
+const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/';
 const { EmojiOverlay } = require('react-native-emoji-picker');
 
 let user;
@@ -170,7 +170,7 @@ render() {
         <Left>   
         <Button
           transparent
-          onPress={() => navigate('ImageScreen', { dp: this.state.friend.displaypic })}
+          onPress={() => navigate('ImageScreen', { dp: imageurl + this.state.friend.displaypic })}
         >         
           <Thumbnail source={{ uri: this.state.friend.displaypic }} small />
         </Button>
