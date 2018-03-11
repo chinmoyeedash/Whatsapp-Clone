@@ -227,7 +227,7 @@ def updateRecdTime():
     user_id = args['user_id']
     
     now = datetime.datetime.now()
-    sqlquery = "UPDATE messages SET recd_time = '" + now + "' WHERE ((sender_id = " + friend_id + " AND receiver_id = " + user_id + ") AND recd_time = 'NULL') ;"
+    sqlquery = "UPDATE messages SET recd_time = '" + str(now) + "' WHERE ((sender_id = " + friend_id + " AND receiver_id = " + user_id + ") AND recd_time = 'NULL') ;"
 
 
     # This is the json payload for the query

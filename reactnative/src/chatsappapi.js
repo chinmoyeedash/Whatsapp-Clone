@@ -199,7 +199,7 @@ export async function uploadPicture(dp,user_id) {
     }
 
     try {
-        let resp = await fetchAction(fileurl, requestOptions);
+        let resp = await fetch(fileurl, requestOptions);
         console.log(resp);
         return resp.json(); 
       }
