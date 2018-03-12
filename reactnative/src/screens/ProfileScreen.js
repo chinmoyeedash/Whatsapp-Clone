@@ -7,7 +7,7 @@ import { updateUser, getUserFromId, uploadPicture } from '../chatsappapi';
 
 
 const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/';
-
+const image1 = require('../images/kingfisher.jpg');
 export default class ProfileScreen extends Component {
 
     
@@ -82,10 +82,10 @@ export default class ProfileScreen extends Component {
           } else if (response.customButton) {
             console.log('User tapped custom button: ', response.customButton);
           } else {
-            const source = { uri: response.uri };
+            //const source = { uri: response.uri };
     
             // You can also display the image using data:
-            // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            const source = { uri: 'data:image/jpeg;base64,' + response.data };
             console.log('source', source);
             // this.setState({
             //     displaypic: source.uri

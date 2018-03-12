@@ -17,7 +17,9 @@ export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
     this.onReceivedPrevMessages = this.onReceivedPrevMessages.bind(this);
-
+    console.ignoredYellowBox = [
+      'Setting a timer'
+    ];
     this.state = {
       user,
       user_id: this.props.navigation.state.params.user_id,
@@ -186,7 +188,7 @@ render() {
          <View style={{ flex: 1 }}>      
          {
            messages.map((message) => 
-          <MessageBubble key={message.msg_text} user_id={user_id} message={message} />
+          <MessageBubble key={message.msg_text} user_id={user_id} friend_id={this.state.friend_id} message={message} />
          )}
         
          </View>

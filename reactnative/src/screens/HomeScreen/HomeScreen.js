@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { AsyncStorage, Alert, ActivityIndicator, ScrollView, View } from 'react-native';
+import { AsyncStorage, Alert, ActivityIndicator, ScrollView, View, YellowBox } from 'react-native';
+
 import { Container, Header, Title, Content, List, 
    Body, Right, Tabs, Tab } from 'native-base';
 //import SocketIOClient from 'socket.io-client';
@@ -18,6 +19,9 @@ import Contacts from '../Contacts';
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
+    console.ignoredYellowBox = [
+      'Setting a timer'
+    ];
     this.state = {
       userMessages: [],
       isLoading: true,
@@ -109,7 +113,7 @@ render() {
       </Right>
       </Header>
       <Content style={{ backgroundColor: 'white' }}>
-      <Tabs initialPage={0} tabBarUnderlineStyle={{ borderBottomWidth: 1 }}>
+      <Tabs initialPage={0} tabBarUnderlineStyle={{ borderBottomWidth: 1 }} onChangeTab={({ i, ref, from }) => this.onReceivedUserMessages()}>
           <Tab heading="Chats" tabStyle={{ backgroundColor: '#045e54' }} activeTabStyle={{ backgroundColor: '#045e54' }}>
             <List >
             {this.renderChats()}

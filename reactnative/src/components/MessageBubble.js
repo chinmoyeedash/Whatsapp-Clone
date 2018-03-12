@@ -6,7 +6,7 @@ let direction = 'right';
 //The bubbles that appear on the left or the right for the messages.
 export default class MessageBubble extends Component {
     render() {
-      const { msg_text, sent_time, sender_id } = this.props.message;
+      const { msg_text, sent_time, sender_id, receiver_id } = this.props.message;
       if (this.props.user_id === sender_id) {
         direction = 'right';
       } else {
@@ -25,7 +25,7 @@ export default class MessageBubble extends Component {
       styles.messageBubbleTextLeft : styles.messageBubbleTextRight;
       const postDate = new Date(sent_time).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
       return (
-          
+        
           <View style={{ flexDirection: 'row' }}>
               {leftSpacer}
               <View style={bubbleStyles}>
@@ -37,7 +37,7 @@ export default class MessageBubble extends Component {
                 </View>
                 {rightSpacer}
             </View>
-        );
+                );
     }
   }
 

@@ -12,7 +12,7 @@ import fetch from 'isomorphic-fetch'
 const networkErrorObj = {
   status: 503
 }
-
+const dp1 = './images/kingfisher.jpg';
 const defaultimg = '61316c53-6640-4d9a-a586-3a9c1892716d';
 const bearerToken = "Bearer 6e3bfbf5f7b27daa2812541585886b06215c48c30883031e";
 
@@ -184,18 +184,56 @@ export async function uploadPicture(dp,user_id) {
      var fileurl = "https://filestore.crawfish92.hasura-app.io/v1/file/" + user_id;
      //const dp1 = "file:///storage/emulated/0/Android/data/com.chatsapp/files/Pictures/image-efe99812-2f01-4b78-9f96-46ffd02186a1.jpg";
     // console.log('dp', dp1);
-     console.log('dp', dp);
-    //  // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+    const image1 = 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d'; 
+     
+      // If you have the auth token saved in offline storage, obtain it in async componentDidMount
       var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
     // // And use it in your headers
      var userToken  = "Bearer " + authToken
+      var dp1 = dp;
+//     let uriParts = dp.split('.');
+//   let fileType = uriParts[uriParts.length - 1];
+//   console.log('fileType', fileType);
+//   let formData = new FormData();
+//   formData.append('photo', {
+//     data: dp,
+//     name: `photo.${fileType}`,
+//     type: `image/jpeg`,
+//   });
+    console.log('dp1', dp1);
+//   console.log('formData', formData);
+//   let options = {
+//     method: 'PUT',
+//     body: formData,
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'multipart/form-data',
+//       "Authorization": userToken
+//     },
+//   };
+//   console.log('options', options);
+//   return fetch(fileurl, options);
+//     const data = new FormData();
+   
+//     data.append('photo', {
+//         uri: image1,
+//         type: 'image/png', // or photo.type
+//         name: 'testPhotoName'
+// });
+//     console.log('dp', dp);
+//     console.log('data', data);
+//     //  // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+//       var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+//     // // And use it in your headers
+//      var userToken  = "Bearer " + authToken
     var requestOptions = {
         method: 'PUT',
         headers: {
-        "Content-Type": "image/png",
+        // "Accept": 'application/json',
+        // "Content-Type": 'image/jpeg',
         "Authorization": userToken
         },
-        body: dp
+        body: dp1
     }
 
     try {
@@ -485,7 +523,7 @@ export async function getUnreadMessages() {
 }
 
 export async function getAllMessages(user_id, friend_id) {
-    var msgurl = "https://app.crawfish92.hasura-app.io/getallMessages?user_id='"+ user_id + "'&friend_id='" + friend_id + "'";
+    var msgurl = "https://app.crawfish92.hasura-app.io/getAllMessages?user_id="+ user_id + "&friend_id=" + friend_id;
     try {
         let allmsgresponse = await fetch(msgurl);
         console.log('allmsgresponse', allmsgresponse);

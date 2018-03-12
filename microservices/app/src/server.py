@@ -250,3 +250,22 @@ def updateRecdTime():
     # resp.content contains the json response.
     print(unreadresp.content)
     return jsonify(unreadrespdata)
+
+@app.route("/uploadPicture")
+def uploadPicture():
+    args = request.args
+    dp = args['dp']
+    user_id = args['user_id']
+    # This is the url to which the query is made
+    url = "https://filestore.crawfish92.hasura-app.io/v1/file" 
+   
+    # Setting headers
+    headers = {}
+
+    #   Open the file and make the query
+    with open(dp, 'rb') as file_image:
+	    resp = requests.post(url, data=file_image.read(), headers=headers)
+
+    # resp.content contains the json response.
+    print(resp.content)
+    return jsonify(resp)
