@@ -15,7 +15,7 @@ import Contacts from '../Contacts';
 // const image3 = require('../../images/mushrooms.jpg');
 //const USER = 'user';
 
-
+let show = true;
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -41,23 +41,24 @@ export default class HomeScreen extends Component {
 
     onReceivedUserMessages = async () => {
       const messages = [];
+      console.log("start");
     const user_id = await AsyncStorage.getItem('user_id');
-    const newmessages = await getLastMessages(user_id);
-    const unreadmessages = await getUnreadMessages();
+    console.log('user_id', user_id);
+    const lastmessages = await getLastMessages(user_id);
+    console.log('lastmessages', lastmessages);
+    
     //skipping first row 
-    console.log('newmessages', newmessages);
-    console.log('newmessages-result', newmessages.result);
-    console.log('newmessages-result-length', newmessages.result.length);
-    for (let i = 1; i < newmessages.result.length; i++) {
-      const friend_id = newmessages.result[i][2];
+    console.log('lastmessages', lastmessages);
+    console.log('lastmessages-result', lastmessages.result);
+    console.log('lastmessages-result-length', lastmessages.result.length);
+    for (let i = 1; i < lastmessages.result.length; i++) {
+      const friend_id = lastmessages.result[i][2];
        let unreadcount = 0;
-      console.log('unreadmessages', unreadmessages);
-      for (let j = 1; j < unreadmessages.result.length; j++) {
-        if (unreadmessages.result[j][0] === friend_id) {
-           unreadcount = unreadmessages.result[j][1];
-           console.log(unreadmessages.result[j][0] + unreadcount);
-        }
-      }
+       const unreadmessages = await getUnreadMessages(user_id, friend_id);
+       console.log('unreadmessages', unreadmessages);
+       unreadcount = unreadmessages.result[1][2];
+       //console.log(unreadmessages.result[j][0] + unreadcount);
+      
       const friends = await getUserFromId(friend_id);
       const friend = friends[0];
      
@@ -65,28 +66,29 @@ export default class HomeScreen extends Component {
       messages.push({
         user_id,
         friend,
-        msg_id: newmessages.result[i][1],
-        msg_text: newmessages.result[i][3],
-        sent_time: newmessages.result[i][4],
-        recd_time: newmessages.result[i][5],
+        msg_id: lastmessages.result[i][1],
+        msg_text: lastmessages.result[i][3],
+        sent_time: lastmessages.result[i][4],
+        recd_time: lastmessages.result[i][5],
         unreadcount
       });
     }
-    console.log(messages);
-    if (messages.length === 0) {
+    console.log('messages', messages);
+    if (messages.length === 0 && show) {
       Alert.alert('Welcome!', 'No current chats available... chose your friends from Contacts tab');
+      show = false;
     }
     this.setState({ user_id, isLoading: false, userMessages: messages });
  }
 
  renderContacts() {
-  console.log(`inside renderContacts, state ${this.state.userMessages}`);
+  console.log('inside renderContacts, state ');
   return (
     <Contacts user_id={this.state.user_id} navigation={this.props.navigation} />
   );
   }
 renderChats() {
-  console.log(`inside renderChats, state ${this.state.userMessages.toString}`);
+  console.log('inside renderChats, state ', this.state.userMessages);
   return this.state.userMessages.map(userMessages =>
       <ChatDetails key={userMessages.msg_id} userMessages={userMessages} navigation={this.props.navigation} />);
 }
@@ -113,7 +115,7 @@ render() {
       </Right>
       </Header>
       <Content style={{ backgroundColor: 'white' }}>
-      <Tabs initialPage={0} tabBarUnderlineStyle={{ borderBottomWidth: 1 }} onChangeTab={({ i, ref, from }) => this.onReceivedUserMessages()}>
+      <Tabs initialPage={0} tabBarUnderlineStyle={{ borderBottomWidth: 1 }} onChangeTab={({i, ref, from }) => this.onReceivedUserMessages()}>
           <Tab heading="Chats" tabStyle={{ backgroundColor: '#045e54' }} activeTabStyle={{ backgroundColor: '#045e54' }}>
             <List >
             {this.renderChats()}

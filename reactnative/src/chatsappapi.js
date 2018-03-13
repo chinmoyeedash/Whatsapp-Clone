@@ -6,7 +6,7 @@ const signupUrl = 'https://auth.crawfish92.hasura-app.io/v1/signup';
 
 import { Alert, AsyncStorage } from 'react-native';
 const IMEI = require('react-native-imei');
-import fetch from 'isomorphic-fetch'
+//import fetch from 'isomorphic-fetch'
 // // Fixes isomorphic-fetch
 // GLOBAL.self = GLOBAL;
 const networkErrorObj = {
@@ -49,16 +49,22 @@ export async function trySignupAndInsert(phone,otp) {
           } 
           return response.json();
         })
-        .then(function(result) {
+        .then(async (result) => {
           console.log('after signup');
           console.log(result);
           // To save the auth token received to offline storage
           var authToken = result.auth_token;
-          console.log('auth token');
-          console.log(authToken);
-          AsyncStorage.setItem('HASURA_AUTH_TOKEN', authToken);
-          AsyncStorage.setItem('user_id', result.hasura_id);
-          AsyncStorage.setItem('mobilenumber', phone);
+          var user_id = result.hasura_id;
+          console.log('auth token', authToken);
+          console.log('userid after signup', user_id);
+          try {
+          await AsyncStorage.setItem('HASURA_AUTH_TOKEN', authToken);
+          await AsyncStorage.setItem('user_id', user_id.toString());
+          await AsyncStorage.setItem('mobilenumber', phone.toString());
+          } catch (error) {
+            console.log('Error saving data');
+          }
+          
           var now = new Date();
         
           var insertBody = {
@@ -68,12 +74,12 @@ export async function trySignupAndInsert(phone,otp) {
                   "objects": [
                       {
                           "mobilenumber": phone,
-                          "displayname": '',
+                          "displayname": phone,
                           "displaypic": defaultimg,
                           "status": '',
                           "lastseen": now,
                           "deviceimei": IMEI.getImei(),
-                          "user_id": result.hasura_id
+                          "user_id": user_id
                       }
                   ]
               }
@@ -94,7 +100,7 @@ export async function trySignupAndInsert(phone,otp) {
                 }
                 throw new Error(response.statusText);
             }
-            return response; 
+            return response.json(); 
         })
       }      
   catch(e) {
@@ -180,11 +186,13 @@ export async function updateUser(mobilenumber, displayname, displaypic, status) 
 }
 
 export async function uploadPicture(dp,user_id) {
+    //const image1 = 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d'; 
+   
+    var uploadurl = "https://app.crawfish92.hasura-app.io/uploadPicture?user_id="+ user_id;
     // var fetchAction =  require('fetch');
      var fileurl = "https://filestore.crawfish92.hasura-app.io/v1/file/" + user_id;
      //const dp1 = "file:///storage/emulated/0/Android/data/com.chatsapp/files/Pictures/image-efe99812-2f01-4b78-9f96-46ffd02186a1.jpg";
     // console.log('dp', dp1);
-    const image1 = 'https://filestore.crawfish92.hasura-app.io/v1/file/61316c53-6640-4d9a-a586-3a9c1892716d'; 
      
       // If you have the auth token saved in offline storage, obtain it in async componentDidMount
       var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
@@ -230,14 +238,14 @@ export async function uploadPicture(dp,user_id) {
         method: 'PUT',
         headers: {
         // "Accept": 'application/json',
-        // "Content-Type": 'image/jpeg',
-        "Authorization": userToken
+        "Content-Type": 'image/jpeg',
+        //"Authorization": userToken
         },
-        body: dp1
+        body: dp
     }
 
     try {
-        let resp = await fetch(fileurl, requestOptions);
+        let resp = await fetch(uploadurl, requestOptions);
         console.log(resp);
         return resp.json(); 
       }
@@ -508,8 +516,8 @@ export async function getLastMessages(user_id) {
     }
 }
 
-export async function getUnreadMessages() {
-    var unreadmsgurl = "https://app.crawfish92.hasura-app.io/getUnreadMessages";
+export async function getUnreadMessages(user_id, friend_id) {
+    var unreadmsgurl = "https://app.crawfish92.hasura-app.io/getUnreadMessages?user_id='"+ user_id + "'&friend_id='"+ friend_id + "'";
     let response = await fetch(unreadmsgurl);
     try {
         let response = await fetch(unreadmsgurl);

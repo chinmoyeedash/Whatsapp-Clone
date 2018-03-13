@@ -49,7 +49,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
       const { navigate } = this.props.navigation;
       this.setState({ promptShow: false, otp: value });
       const response = await trySignupAndInsert(this.state.phone, value);
-      console.log('going to home');
+      console.log('going to home, response', response);
       navigate('Home');
     }
   }

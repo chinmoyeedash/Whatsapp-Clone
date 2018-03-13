@@ -33,10 +33,10 @@ $(document).ready(function(){
 			fromuserid : fromuserid
 		});
 	});
-	socket.on('message',function(msg_text){
+	socket.on('message',function(msg){
 		console.log('IN MESSAGE')
-		console.log(msg_text)
-		$('#messages').append('<li>'+msg_text+'</li>');
+		console.log(msg)
+		$('#messages').append('<li>'+msg.msg_text+'</li>');
 		console.log('Received message');
 	});
 	$('form#emit').submit(function(event) {

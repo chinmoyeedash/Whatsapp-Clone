@@ -24,20 +24,21 @@ export default class MessageBubble extends Component {
       const bubbleTextStyle = this.props.direction === 'left' ? 
       styles.messageBubbleTextLeft : styles.messageBubbleTextRight;
       const postDate = new Date(sent_time).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
+      
       return (
-        
-          <View style={{ flexDirection: 'row' }}>
-              {leftSpacer}
-              <View style={bubbleStyles}>
-           
-                <Text style={bubbleTextStyle}>
-                  {msg_text}
-                  <Text note style={{ justifyContent: 'flex-end', color: 'green' }}>{'\n'}{postDate} </Text>
-                </Text> 
-                </View>
-                {rightSpacer}
-            </View>
-                );
+        <View style={{ flexDirection: 'row' }}>
+            {leftSpacer}
+            <View style={bubbleStyles}>
+          
+              <Text style={bubbleTextStyle}>
+                {msg_text}
+                <Text note style={{ justifyContent: 'flex-end', color: 'green' }}>{'\n'}{postDate} </Text>
+              </Text> 
+              </View>
+              {rightSpacer}
+          </View>
+      );
+    
     }
   }
 

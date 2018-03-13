@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Header, Container, Content, Icon, Right, View, Body, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
+import { Header, Container, Content, Icon, Left, Right, View, Body, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
 
+const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/';
 export default class ContactInfoScreen extends Component {
 
     state = {
@@ -31,9 +32,9 @@ export default class ContactInfoScreen extends Component {
             <Button
             transparent
             style={{ height: 150, width: 150 }}
-            onPress={() => this.props.navigation.navigate('ImageScreen', { dp: contact.displaypic })}
+            onPress={() => this.props.navigation.navigate('ImageScreen', { dp: imageurl + contact.displaypic })}
             >      
-                <Thumbnail style={{ height: 150, width: 150 }} large source={{ uri: contact.displaypic }} />
+                <Thumbnail style={{ height: 150, width: 150 }} large source={{ uri: imageurl + contact.displaypic }} />
             </Button>    
             </Body>
             

@@ -163,8 +163,10 @@ def getLastMessages():
 def getUnreadMessages():
     # This is the url to which the query is made
     url = "https://data.crawfish92.hasura-app.io/v1/query"
-    
-    sqlquery = "SELECT sender_id, count(recd_time) as unread FROM messages where recd_time = 'NULL' GROUP BY sender_id,recd_time;"
+    args = request.args
+    user_id = args['user_id']
+    friend_id = args['friend_id']
+    sqlquery = "SELECT sender_id, receiver_id, count(recd_time) as unread FROM messages where ((sender_id = " + friend_id + "AND receiver_id = " + user_id + " ) AND recd_time = 'NULL' ) GROUP BY sender_id, receiver_id, recd_time;"
 
     # This is the json payload for the query
     requestPayload = {
@@ -251,21 +253,22 @@ def updateRecdTime():
     print(unreadresp.content)
     return jsonify(unreadrespdata)
 
-@app.route("/uploadPicture")
-def uploadPicture():
-    args = request.args
-    dp = args['dp']
-    user_id = args['user_id']
-    # This is the url to which the query is made
-    url = "https://filestore.crawfish92.hasura-app.io/v1/file" 
+# @app.route("/uploadPicture")
+# def uploadPicture():
+#     args = request.args
+    
+#     user_id = args['user_id']
+#     # This is the url to which the query is made
+#     url = "https://filestore.crawfish92.hasura-app.io/v1/file/"+user_id 
    
-    # Setting headers
-    headers = {}
+#     # Setting headers
+#     headers = {}
 
-    #   Open the file and make the query
-    with open(dp, 'rb') as file_image:
-	    resp = requests.post(url, data=file_image.read(), headers=headers)
+#     #   Open the file and make the query
+#     with open(test.png, 'rb') as file_image:
+# 	    resp = requests.post(url, data=file_image.read(), headers=headers)
 
-    # resp.content contains the json response.
-    print(resp.content)
-    return jsonify(resp)
+
+#     # resp.content contains the json response.
+#     print(resp.content)
+#     return jsonify(resp)

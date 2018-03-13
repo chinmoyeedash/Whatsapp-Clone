@@ -5,6 +5,7 @@ import { ListItem, Thumbnail, Text, Body, Left, Right, Badge } from 'native-base
 //The bubbles that appear on the left or the right for the messages.
 export default class ChatDetails extends Component {
 
+  
 render() {
     const { navigate } = this.props.navigation;
     const { msg_text, sent_time, user_id, friend, unreadcount } = this.props.userMessages;

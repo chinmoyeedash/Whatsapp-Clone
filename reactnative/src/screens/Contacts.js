@@ -12,7 +12,7 @@ export default class Contacts extends Component {
     constructor(props) {
         super(props);
         user_id = this.props.user_id;
-        
+        console.log(user_id, 'user_id');
         this.updateContacts = this.updateContacts.bind(this);
         this.state = {
             contacts: []

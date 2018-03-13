@@ -79,7 +79,9 @@ export default class ChatScreen extends Component {
     console.log(msg);
     const oldMessages = this.state.messages;
   // React will automatically rerender the component when a new message is added.
+    if (this.state.friend.user_id === msg.receiver_id) {
    this.setState({ messages: oldMessages.concat(msg) });
+    }
    updateRecdTime(this.state.user_id, this.state.friend.user_id);
   }
 
@@ -174,7 +176,7 @@ render() {
           transparent
           onPress={() => navigate('ImageScreen', { dp: imageurl + this.state.friend.displaypic })}
         >         
-          <Thumbnail source={{ uri: this.state.friend.displaypic }} small />
+          <Thumbnail source={{ uri: imageurl + this.state.friend.displaypic }} small />
         </Button>
         </Left>
             <Body>

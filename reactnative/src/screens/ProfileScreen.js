@@ -170,9 +170,9 @@ export default class ProfileScreen extends Component {
             source={{ uri: image }}    
             />
             </Button>
-            <Button block rounded style={{ backgroundColor: 'darkorange' }} onPress={this.selectPhotoTapped.bind(this)} >
+            {/* <Button block rounded style={{ backgroundColor: 'darkorange' }} onPress={this.selectPhotoTapped.bind(this)} >
             <Text> Change Picture </Text>
-        </Button>
+        </Button> */}
             </Body>    
         </Card>
 
