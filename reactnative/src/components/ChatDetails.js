@@ -5,19 +5,26 @@ import { ListItem, Thumbnail, Text, Body, Left, Right, Badge } from 'native-base
 //The bubbles that appear on the left or the right for the messages.
 export default class ChatDetails extends Component {
 
+gotoChatscreen() {
+  const { user_id, friend } = this.props.userMessages;
   
-render() {
-    const { navigate } = this.props.navigation;
+  const { navigate } = this.props.navigation;
+  const socket = this.props.socket;
+  socket.disconnect();
+  navigate('ChatScreen', { user_id, friend });
+}
+  
+render() {    
     const { msg_text, sent_time, user_id, friend, unreadcount } = this.props.userMessages;
     const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/' + friend.displaypic;
-
+    
     console.log(`inside chatdetials ${friend.displaypic}`);
     
   const postDate = new Date(sent_time).toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
    //const postDate = sent_time; 
    return (
           
-           <ListItem avatar button onPress={() => navigate('ChatScreen', { user_id, friend })}>
+           <ListItem avatar button onPress={this.gotoChatscreen.bind(this)}>
               <Left>
               <Thumbnail source={{ uri: imageurl }} />
               </Left>

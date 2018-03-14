@@ -36,7 +36,7 @@ $(document).ready(function(){
 	socket.on('message',function(msg){
 		console.log('IN MESSAGE')
 		console.log(msg)
-		$('#messages').append('<li>'+msg.msg_text+'</li>');
+		$('#messages').append('<li>'+ msg.msg_text +'</li>');
 		console.log('Received message');
 	});
 	$('form#emit').submit(function(event) {

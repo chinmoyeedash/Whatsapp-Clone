@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Keyboard, TextInput, StyleSheet, AsyncStorage
+  Keyboard, TextInput, StyleSheet, AsyncStorage, ScrollView
 } from 'react-native';
 import { Container, Header, Content, Text, Left, Button, Body, Thumbnail, Title, View, Icon } from 'native-base';
 import SocketIOClient from 'socket.io-client';
@@ -22,6 +22,7 @@ export default class ChatScreen extends Component {
     ];
     this.state = {
       user,
+      socket: this.props.navigation.state.params.socket,
       user_id: this.props.navigation.state.params.user_id,
       friend: this.props.navigation.state.params.friend,
       showPicker: false,
@@ -33,7 +34,7 @@ export default class ChatScreen extends Component {
     this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
     // this.socket.open();
     
-    console.log(this.socket);
+    console.log(this.state.socket);
     this.socket.on('message', this.onReceivedMessage);
 
     this.joinUser = this.joinUser.bind(this);
@@ -45,13 +46,13 @@ export default class ChatScreen extends Component {
       this.onReceivedPrevMessages();
   }
 
-  componentDidMount() {
-    this.joinUser();
-  }
+   componentDidMount() {
+     this.joinUser();
+   }
 
-  componentWillUnmount() {
-    this.socket.disconnect();
-  }
+   componentWillUnmount() {
+     this.socket.disconnect();
+   }
 
   onReceivedPrevMessages = async () => {
     const prevMessages = [];
@@ -73,15 +74,20 @@ export default class ChatScreen extends Component {
     }
     console.log(prevMessages);
     this.setState({ messages: prevMessages });
+    updateRecdTime(this.state.user_id, this.state.friend.user_id);
   }
 
   onReceivedMessage = (msg) => {
-    console.log(msg);
+    console.log('message received in chatscreen', msg);
     const oldMessages = this.state.messages;
+
   // React will automatically rerender the component when a new message is added.
-    if (this.state.friend.user_id === msg.receiver_id) {
-   this.setState({ messages: oldMessages.concat(msg) });
-    }
+  console.log('msg.sender_id', msg.sender_id);
+  console.log('this.state.friend.user_id', this.state.friend.user_id);
+  if (this.state.friend.user_id.toString() === msg.sender_id) {
+    console.log('updating');
+     this.setState({ messages: oldMessages.concat(msg) });
+  }
    updateRecdTime(this.state.user_id, this.state.friend.user_id);
   }
 
@@ -187,13 +193,13 @@ render() {
           </Header>
         <Content >
           
-         <View style={{ flex: 1 }}>      
+         <ScrollView style={{ flex: 1 }}>      
          {
            messages.map((message) => 
-          <MessageBubble key={message.msg_text} user_id={user_id} friend_id={this.state.friend_id} message={message} />
+          <MessageBubble key={message.sent_time} user_id={user_id} friend_id={this.state.friend_id} message={message} />
          )}
         
-         </View>
+         </ScrollView>
          </Content> 
          <View style={styles.inputBar}>
          <Button transparent onPress={this.openEmoji.bind(this, value)}>

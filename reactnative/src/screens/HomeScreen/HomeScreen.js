@@ -8,7 +8,7 @@ import MorePopupMenu from '../../components/MorePopupMenu';
 import { getUserFromId, getLastMessages, getUnreadMessages } from '../../chatsappapi';
 import ChatDetails from '../../components/ChatDetails';
 import Contacts from '../Contacts';
-
+import SocketIOClient from 'socket.io-client';
 // for defective95 const defaultimg = 'https://filestore.defective95.hasura-app.io/v1/file/c6afa506-673c-46b0-bf93-50ed2f18163e';
 // const image1 = require('../../images/kingfisher.jpg');
 // const image2 = require('../../images/butterfly.jpg');
@@ -29,7 +29,10 @@ export default class HomeScreen extends Component {
       fabActive: true,
       mobilenumber: '',
     };
-    
+    this.socket = SocketIOClient('https://app.crawfish92.hasura-app.io/', { transports: ['websocket'] });
+    this.socket.on('message', this.onReceivedMessage);
+
+    this.joinUser = this.joinUser.bind(this);
     this.onReceivedUserMessages = this.onReceivedUserMessages.bind(this);
   }
   
@@ -37,6 +40,25 @@ export default class HomeScreen extends Component {
   componentWillMount() {
     //this.setUserInfo();
     this.onReceivedUserMessages();
+  }
+  componentDidMount() {
+    this.joinUser();
+  }
+
+  
+  componentWillUnmount() {
+    this.socket.disconnect();
+  }
+
+  onReceivedMessage = (msg) => {
+    console.log('received new msg', msg);
+    this.onReceivedUserMessages();
+  //   const oldMessages = this.state.messages;
+  // // React will automatically rerender the component when a new message is added.
+  //   if (this.state.friend.user_id === msg.receiver_id) {
+  //  this.setState({ messages: oldMessages.concat(msg) });
+  //   }
+  // updateRecdTime(this.state.user_id, this.state.friend.user_id);
   }
 
     onReceivedUserMessages = async () => {
@@ -56,8 +78,10 @@ export default class HomeScreen extends Component {
        let unreadcount = 0;
        const unreadmessages = await getUnreadMessages(user_id, friend_id);
        console.log('unreadmessages', unreadmessages);
-       unreadcount = unreadmessages.result[1][2];
-       //console.log(unreadmessages.result[j][0] + unreadcount);
+       if (unreadmessages.result.length > 1) {
+         unreadcount = unreadmessages.result[1][2];
+       }
+       console.log('unreadcount=', unreadcount);
       
       const friends = await getUserFromId(friend_id);
       const friend = friends[0];
@@ -81,6 +105,31 @@ export default class HomeScreen extends Component {
     this.setState({ user_id, isLoading: false, userMessages: messages });
  }
 
+ joinUser = async() => {
+  console.log('going to connect');
+  const userid = await AsyncStorage.getItem('user_id');
+  console.log('userid inside joinuser', userid);
+    this.socket.on('connect', () => {
+      console.log('in CONNECT');
+      
+      this.socket.emit('myConnect', {
+        msg: 'User has connected',
+        fromuserid: userid
+      });
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('in DISCONNECT');
+      const userid = this.state.user_id;
+      this.socket.emit('myDisconnect', {
+        msg: 'User has disconnected',
+        fromuserid: userid
+      });
+    });
+
+    //updateRecdTime(this.state.user_id, this.state.friend.user_id);
+}
+
  renderContacts() {
   console.log('inside renderContacts, state ');
   return (
@@ -90,7 +139,7 @@ export default class HomeScreen extends Component {
 renderChats() {
   console.log('inside renderChats, state ', this.state.userMessages);
   return this.state.userMessages.map(userMessages =>
-      <ChatDetails key={userMessages.msg_id} userMessages={userMessages} navigation={this.props.navigation} />);
+      <ChatDetails key={userMessages.msg_id} userMessages={userMessages} socket={this.socket} navigation={this.props.navigation} />);
 }
 
 render() { 
