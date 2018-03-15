@@ -3,6 +3,7 @@
 const dataUrl = 'https://data.crawfish92.hasura-app.io/v1/query';
 const loginUrl = 'https://auth.crawfish92.hasura-app.io/v1/login';
 const signupUrl = 'https://auth.crawfish92.hasura-app.io/v1/signup';
+const defaultimgblob = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHoAAAB6CAMAAABHh7fWAAAAV1BMVEXp6ekyicju7Oomhccsh8fy7+sfg8bf4+cSgMU2i8nl5+ijwNqyyd3M2OPH1eKIsdVkn8+6zt/V3eRwpdGVuNdXmc2qxNtHkssAfcV9rNN4qNKOtdY9jsmdPwt6AAAEBElEQVRoge2aaZPaMAyGiSwfuUMOQiD//3fWAUop5LAtOzvt8M7szu4HeEaKpMiSD4evvvrqq6+++ur/FAAckkRqJbe/9+Me8lNZdWOs1XfNNasPu+ABjpdYCYZPMaX6Mueh4VxemWIYvQnZeUwTHhJcX8Qn90EX2CahLIdDi2ye+4DHWRg2FJ1YAd/hTR0ADumSq18lxqN3NgxbJv82PPUcbbDp7KdU6ZfdrcXXO3vwyIbKgqzZrbfnDaWxt+8SvpIMTpbkCDH3woYaDbLqjd0lXtCdNVm7/Ooh1CC1dfed7cHlib27J2FHNhtaq7x6Mbugmg3CyWhtdkU02z6xnjrXRLRLeN/FrjSP12dXcoQRCe0cZJPOpPyCytnf1LIiIwIaK4rRuXInRxgTCjkhtSYpQnrxkhBlGk1oEXlDeNQ6zlJ3NCnAdVGhNEpENKU3JaIprem/iyY4/AcjnA8/lteOLeETTXh1QUGp4RFKZ7J+c1Ecjh2BrE+YhDhjA6VVIL0/FOnQB4V7bxYJ4rkrdvY4NrSOFK7OHqdk9U3SNb0wph66nGspI1TRh2q3goYx/ZDrWMe9jFPk6OByVvkYpkBm73KM/cxKTWeULxInT9OrxGZWeCOXvmZ2IO1qmp8H/WDXyoLNep9zaZuxHes9gm/s3jDWBOVoO8+WjQkbRembfF+6bDqdBVq8QN6trz9QNDLQugn4KVqe4KHqi4BLNoBTP7Pcm9Z7qjoG3i0CFMOopo3mk4ooVN/WO2xUAWTRNn0s1E1s7Jq0TsKAP78UAJI6L45aRS2TUBtsSJamy3DTwsfom1WelNG5nDF8VSArVkpSuIMsp3gWfW71NTzTH2LnwR0OkD6Wxqiu5oZzWd2Tn4nW1l2/vyLv/tQPNp7MvgaSlyW3cCsykP1VslF02Tacy7R/rXeILt349b1kangq19IIoG7Ht0+hGKzJl5kDD4p4KObvgUyZnjVspsKLyjLPqvmXM6LCy6nmnD8zWv+h/8vTSiw0UaKzYa8tyqeKrbohzYq81sqPWXvp1XllJ4W9+Uxle12NjAnG9G/9I8RWC4HG3Rq/kKZlMzLtjiElTaxmJYxGlsRZ2YKMRjpOB8ttie3zHxj1vPbant8RdzwrElvbiNp9WLWhrasT/vPqhb2aYVCEI2+MVzhlGrspHFeMPoZI6T9i7WJhgT6k0dNL96eMXkkwwr0EQ2G8QCYtq820UMrhEtroxXJKuhxgqtn9E3GnZSicW3OGD7Ibepzp0/I9yLNrCd7u4e9pGfPh8bDl+wX96fF6F3A0cw/NZd7uiH6/HkTcVFvo4+YfD9OHzqGjt4ed7OVv/db++2FDsR/67QYDnPZ61B/3NghbU2s94+wX3nQ3D88Exh4AAAAASUVORK5CYII='
 
 import { Alert, AsyncStorage } from 'react-native';
 const IMEI = require('react-native-imei');
@@ -198,7 +199,7 @@ export async function uploadPicture(dp,user_id) {
       var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
     // // And use it in your headers
      var userToken  = "Bearer " + authToken
-      var dp1 = dp;
+      var dp = dp;
 //     let uriParts = dp.split('.');
 //   let fileType = uriParts[uriParts.length - 1];
 //   console.log('fileType', fileType);
@@ -208,7 +209,7 @@ export async function uploadPicture(dp,user_id) {
 //     name: `photo.${fileType}`,
 //     type: `image/jpeg`,
 //   });
-    console.log('dp1', dp1);
+    //console.log('dp', dp);
 //   console.log('formData', formData);
 //   let options = {
 //     method: 'PUT',
@@ -238,14 +239,13 @@ export async function uploadPicture(dp,user_id) {
         method: 'PUT',
         headers: {
         // "Accept": 'application/json',
-        "Content-Type": 'image/jpeg',
-        //"Authorization": userToken
+        "Authorization": userToken
         },
         body: dp
     }
 
     try {
-        let resp = await fetch(uploadurl, requestOptions);
+        let resp = await fetch(fileurl, requestOptions);
         console.log(resp);
         return resp.json(); 
       }
@@ -292,6 +292,39 @@ export async function uploadPicture(dp,user_id) {
 //     });
 // }
 
+export async function getPicture(file_id) {
+    var url = "https://filestore.crawfish92.hasura-app.io/v1/file/" + file_id;
+     // If you have the auth token saved in offline storage, obtain it in async componentDidMount
+     var authToken = await AsyncStorage.getItem('HASURA_AUTH_TOKEN');
+     // // And use it in your headers
+      var userToken  = "Bearer " + authToken
+
+    var requestOptions = {
+        "method": "GET",
+        "headers": {
+            "Authorization": userToken
+        }
+    };
+
+    try {
+        let resp = await fetch(url, requestOptions);
+        console.log(resp);
+        let img = '';
+        let imgresp = resp._bodyText;
+            if (imgresp.startsWith('data')) {
+                img = imgresp;
+            } else {
+                img = defaultimgblob;
+            }
+        return img; 
+      }
+      catch(e) {
+        console.log("Request Failed: " + e);
+        return networkErrorObj;
+      }
+}
+
+ 
 export async function getContacts(user_id) {
 	console.log('Making data query (get contacts)');
     // If you have the auth token saved in offline storage, obtain it in async componentDidMount

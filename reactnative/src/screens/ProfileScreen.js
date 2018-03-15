@@ -3,11 +3,11 @@ import { Alert, AsyncStorage } from 'react-native';
 import { Header, Container, Content, View, Body, Left, Right, Icon, Text, Button, Thumbnail, Card, Form, Label, Item, Input } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 
-import { updateUser, getUserFromId, uploadPicture } from '../chatsappapi';
+import { updateUser, getUserFromId, uploadPicture, getPicture } from '../chatsappapi';
 
-
+const defaultimgblob = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHoAAAB6CAMAAABHh7fWAAAAV1BMVEXp6ekyicju7Oomhccsh8fy7+sfg8bf4+cSgMU2i8nl5+ijwNqyyd3M2OPH1eKIsdVkn8+6zt/V3eRwpdGVuNdXmc2qxNtHkssAfcV9rNN4qNKOtdY9jsmdPwt6AAAEBElEQVRoge2aaZPaMAyGiSwfuUMOQiD//3fWAUop5LAtOzvt8M7szu4HeEaKpMiSD4evvvrqq6+++ur/FAAckkRqJbe/9+Me8lNZdWOs1XfNNasPu+ABjpdYCYZPMaX6Mueh4VxemWIYvQnZeUwTHhJcX8Qn90EX2CahLIdDi2ye+4DHWRg2FJ1YAd/hTR0ADumSq18lxqN3NgxbJv82PPUcbbDp7KdU6ZfdrcXXO3vwyIbKgqzZrbfnDaWxt+8SvpIMTpbkCDH3woYaDbLqjd0lXtCdNVm7/Ooh1CC1dfed7cHlib27J2FHNhtaq7x6Mbugmg3CyWhtdkU02z6xnjrXRLRLeN/FrjSP12dXcoQRCe0cZJPOpPyCytnf1LIiIwIaK4rRuXInRxgTCjkhtSYpQnrxkhBlGk1oEXlDeNQ6zlJ3NCnAdVGhNEpENKU3JaIprem/iyY4/AcjnA8/lteOLeETTXh1QUGp4RFKZ7J+c1Ecjh2BrE+YhDhjA6VVIL0/FOnQB4V7bxYJ4rkrdvY4NrSOFK7OHqdk9U3SNb0wph66nGspI1TRh2q3goYx/ZDrWMe9jFPk6OByVvkYpkBm73KM/cxKTWeULxInT9OrxGZWeCOXvmZ2IO1qmp8H/WDXyoLNep9zaZuxHes9gm/s3jDWBOVoO8+WjQkbRembfF+6bDqdBVq8QN6trz9QNDLQugn4KVqe4KHqi4BLNoBTP7Pcm9Z7qjoG3i0CFMOopo3mk4ooVN/WO2xUAWTRNn0s1E1s7Jq0TsKAP78UAJI6L45aRS2TUBtsSJamy3DTwsfom1WelNG5nDF8VSArVkpSuIMsp3gWfW71NTzTH2LnwR0OkD6Wxqiu5oZzWd2Tn4nW1l2/vyLv/tQPNp7MvgaSlyW3cCsykP1VslF02Tacy7R/rXeILt349b1kangq19IIoG7Ht0+hGKzJl5kDD4p4KObvgUyZnjVspsKLyjLPqvmXM6LCy6nmnD8zWv+h/8vTSiw0UaKzYa8tyqeKrbohzYq81sqPWXvp1XllJ4W9+Uxle12NjAnG9G/9I8RWC4HG3Rq/kKZlMzLtjiElTaxmJYxGlsRZ2YKMRjpOB8ttie3zHxj1vPbant8RdzwrElvbiNp9WLWhrasT/vPqhb2aYVCEI2+MVzhlGrspHFeMPoZI6T9i7WJhgT6k0dNL96eMXkkwwr0EQ2G8QCYtq820UMrhEtroxXJKuhxgqtn9E3GnZSicW3OGD7Ibepzp0/I9yLNrCd7u4e9pGfPh8bDl+wX96fF6F3A0cw/NZd7uiH6/HkTcVFvo4+YfD9OHzqGjt4ed7OVv/db++2FDsR/67QYDnPZ61B/3NghbU2s94+wX3nQ3D88Exh4AAAAASUVORK5CYII='
 const imageurl = 'https://filestore.crawfish92.hasura-app.io/v1/file/';
-const image1 = require('../images/kingfisher.jpg');
+
 export default class ProfileScreen extends Component {
 
     
@@ -18,7 +18,8 @@ export default class ProfileScreen extends Component {
             displaypic: '',
             mobilenumber: '',
             status: '',
-            displayname: ''
+            displayname: '',
+            dpBlob: ''
           };  
 
         this.setUserInfo = this.setUserInfo.bind(this);
@@ -38,27 +39,31 @@ export default class ProfileScreen extends Component {
         }).then(oldUser => {
           console.log(oldUser);
           this.setState({
-              user_id: oldUser[0].user_id,  
+            user_id: oldUser[0].user_id,  
             mobilenumber: oldUser[0].mobilenumber, 
             displayname: oldUser[0].displayname,
             status: oldUser[0].status,
-            displaypic: oldUser[0].displaypic
-            
+            displaypic: oldUser[0].displaypic 
           });
           console.log(imageurl + this.state.displaypic);
-          AsyncStorage.setItem('user', JSON.stringify(oldUser[0]));
+          AsyncStorage.setItem('user', JSON.stringify(oldUser[0])); 
+          return getPicture(oldUser[0].displaypic);
+        }).then(img => {
+            console.log('imageresp', img);  
+            this.setState({
+                dpBlob: img
+              });
         })
         .catch(error => console.log(error));
     }
 
     uploadPictureSetState = async (dp) => {
-
         const uploadResponse = await uploadPicture(dp, this.state.user_id);
         console.log('uploadResponse', uploadResponse); 
         this.setState({
-
-            displaypic: uploadResponse.file_id
-
+            displaypic: uploadResponse.file_id,
+            dpBlob: dp
+            
         });
     }
 
@@ -85,11 +90,12 @@ export default class ProfileScreen extends Component {
             //const source = { uri: response.uri };
     
             // You can also display the image using data:
-            const source = { uri: 'data:image/jpeg;base64,' + response.data };
+            const source = { uri: `data:image/jpeg;base64,${response.data}` };
             console.log('source', source);
             // this.setState({
             //     displaypic: source.uri
             // });
+            
             this.uploadPictureSetState(source.uri);
           }
         });
@@ -142,8 +148,6 @@ export default class ProfileScreen extends Component {
       }
     
     render() {
-        const image = imageurl + this.state.displaypic;
-        console.log(image);
     return (
         <Container >
         <Header style={{ backgroundColor: '#045e54' }}>
@@ -162,17 +166,17 @@ export default class ProfileScreen extends Component {
             <Button
                 transparent
                 style={{ height: 170, width: 170 }}
-                onPress={() => this.props.navigation.navigate('ImageScreen', { displaypic: image })}
+                onPress={() => this.props.navigation.navigate('ImageScreen', { dp: this.state.dpBlob })}
             >      
             <Thumbnail 
             style={{ height: 170, width: 170 }} 
             large 
-            source={{ uri: image }}    
+            source={{ uri: this.state.dpBlob }}
             />
             </Button>
-            {/* <Button block rounded style={{ backgroundColor: 'darkorange' }} onPress={this.selectPhotoTapped.bind(this)} >
+            <Button block rounded style={{ backgroundColor: 'darkorange' }} onPress={this.selectPhotoTapped.bind(this)} >
             <Text> Change Picture </Text>
-        </Button> */}
+        </Button>
             </Body>    
         </Card>
 
