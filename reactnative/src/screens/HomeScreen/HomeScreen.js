@@ -99,7 +99,7 @@ export default class HomeScreen extends Component {
     }
     console.log('messages', messages);
     if (messages.length === 0 && show) {
-      Alert.alert('Welcome!', 'No current chats available... chose your friends from Contacts tab');
+      Alert.alert('Welcome!', 'Your UserID' + user_id + 'No current chats available... chose your friends from Contacts tab');
       show = false;
     }
     this.setState({ user_id, isLoading: false, userMessages: messages });

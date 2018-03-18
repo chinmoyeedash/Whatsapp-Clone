@@ -85,31 +85,6 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
       }
     }
 
-    logInUser = async () => {
-      // const response = await tryLogin('trial', 'trial#user');
-      // if (response.status !== 200) {
-      //   if (response.status === 504) {
-      //     Alert.alert('Network Error', 'Check your internet connection');
-      //   } else {
-      //     Alert.alert('Error', 'Unauthorized, Invalid username or password');      
-      //   }
-      // } else {
-      //   this.setState({ isLoggedIn: true });  
-      // }
-      //const insertResponse = await insertUser(899924244, 5);
-      const insertResponse = await getUser(9880175579);
-      if (insertResponse.status !== 200) {
-        if (insertResponse.status === 504) {
-          Alert.alert('Network Error', 'Check your internet connection');
-        } else {
-          Alert.alert('Error', `Unable to insert ${insertResponse.status}`);   
-          console.log(insertResponse.statusText);   
-        }
-      } else {
-        //AsyncStorage.setItem('userid', 3);
-      }
-    }
-
     saveData = phone => {
       this.setState({ phone });
     }
