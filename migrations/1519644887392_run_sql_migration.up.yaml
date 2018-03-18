@@ -1,6 +1,6 @@
 - args:
     sql: |-
-      INSERT INTO users VALUES (939484432, 'Test2', 10, 'I enjoy learning!', 2018-03-15T18:57:31.731421+00:00, '0', 2);
-      INSERT INTO users VALUES (890384432, 'Test3', 21, 'ChatsApp only!', 2018-03-15T17:56:06.496327+00:00, '0', 3);
+      INSERT INTO users VALUES (939484432, 'Test2', '61316c53-6640-4d9a-a586-3a9c1892716d', 'I enjoy learning!', '2018-03-15T18:57:31.731421+00:00', '0', 2);
+      INSERT INTO users VALUES (890384432, 'Test3', '61316c53-6640-4d9a-a586-3a9c1892716d', 'ChatsApp only!', '2018-03-15T17:56:06.496327+00:00', '0', 3);
       
   type: run_sql

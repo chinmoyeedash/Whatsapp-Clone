@@ -1,4 +1,0 @@
-- args:
-    sql: ALTER TABLE "messages" ADD FOREIGN KEY ("user_mobilenumber") REFERENCES "user"
-      ("mobilenumber")
-  type: run_sql

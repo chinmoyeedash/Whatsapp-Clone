@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "messages" ADD COLUMN "user_mobilenumber" integer NOT NULL
-  type: run_sql

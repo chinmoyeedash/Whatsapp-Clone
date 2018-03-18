@@ -1,7 +1,7 @@
 - args:
     permission:
       columns:
-      - user_mobilenumber
+      - user_id
       - msg_id
       - msg_text
       - sent_time

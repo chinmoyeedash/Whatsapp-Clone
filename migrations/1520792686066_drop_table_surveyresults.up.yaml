@@ -1,3 +1,0 @@
-- args:
-    sql: DROP TABLE "surveyresults"
-  type: run_sql

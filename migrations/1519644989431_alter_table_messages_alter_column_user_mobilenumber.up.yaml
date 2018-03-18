@@ -1,9 +1,0 @@
-- args:
-    sql: ALTER TABLE "messages" ALTER COLUMN "user_mobilenumber" TYPE numeric;
-  type: run_sql
-- args:
-    sql: ALTER TABLE "messages" ALTER COLUMN "user_mobilenumber" DROP DEFAULT;
-  type: run_sql
-- args:
-    sql: ALTER TABLE "messages" ALTER COLUMN "user_mobilenumber" SET NOT NULL;
-  type: run_sql

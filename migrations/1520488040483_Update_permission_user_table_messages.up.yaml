@@ -1,7 +1,0 @@
-- args:
-    permission:
-      allow_upsert: true
-      check: {}
-    role: user
-    table: messages
-  type: create_insert_permission

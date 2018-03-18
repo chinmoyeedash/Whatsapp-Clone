@@ -1,9 +1,0 @@
-- args:
-    sql: ALTER TABLE "user" ALTER COLUMN "displaypic" TYPE text;
-  type: run_sql
-- args:
-    sql: ALTER TABLE "user" ALTER COLUMN "displaypic" DROP DEFAULT;
-  type: run_sql
-- args:
-    sql: ALTER TABLE "user" ALTER COLUMN "displaypic" DROP NOT NULL;
-  type: run_sql
